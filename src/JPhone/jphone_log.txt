@@ -1,2 +1,0 @@
-T074505359 - JPjSip::SipUaCreate pjsua_transport_create return failure, status=130048
-T074505359 - JPjSipUa::InitFunc SipUaCreate return failure
