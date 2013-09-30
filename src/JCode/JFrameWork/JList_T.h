@@ -27,6 +27,7 @@ public:
     JUINT32 GetDataLength();
 
 private:
+    //the stored data
     TYPE* m_pData;
     JUINT32 m_Length;
 
@@ -49,7 +50,10 @@ public:
     JListItem<TYPE>* Item();
 
 private:
+    //the iterator list
     JList<TYPE>& m_rList;
+
+    //current location of the list 
     JListItem<TYPE>* m_pCurrListItem;
 };
 
@@ -58,24 +62,30 @@ private:
 template<class TYPE> class JList: public JObject{
 public:
     JList();
+    //copy construct function
     JList(JList& rLog);
     ~JList();
 
+    //assignment operator
     JList& operator=(JList& rList);
 
     JUINT32 InsertItem(JListItem<TYPE>* pItem, JListItem<TYPE>* pTarget);
     JUINT32 RemoveItem(JListItem<TYPE>* pItem);
+
     JUINT32 RemoveAllItem();
-    JUINT32 RemoveLastItem();
+    JUINT32 RemoveTailItem();
 
     JListItem<TYPE>* GetPrevItem(JListItem<TYPE>* pTarget);
     JListItem<TYPE>* GetNextItem(JListItem<TYPE>* pTarget);
     JListItem<TYPE>* GetHeadItem();
     JListItem<TYPE>* GetTailItem();
+
     JUINT32 GetItemNum();
 
 private:
+    //point to the head of the list
     JListItem<TYPE>* m_pHead;
+    //point to the tail of the list
     JListItem<TYPE>* m_pTail;
 
     JUINT32 CopyObject(JList& rDst, JList& rSrc);
@@ -90,9 +100,11 @@ public:
 
     JUINT32 EnQueue(JListItem<TYPE>* pItem);
     JListItem<TYPE>* DeQueue();
+
     JUINT32 IsEmpty();
 
 private:
+    //the stored list for queue
     JList<TYPE> m_List;
 };
 

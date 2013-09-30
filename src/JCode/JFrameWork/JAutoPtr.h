@@ -13,13 +13,15 @@
 namespace JFrameWork{
 
 
-//definition of specialization template 
+//the specialization template
+
+//JAutoPtr specialized by JLock, in order to auto release lock before function exit
 template<> inline JAutoPtr<JLock>::JAutoPtr(JLock* pObject);
 
 template<> inline JAutoPtr<JLock>::~JAutoPtr();
 
 
-//include the specialization template implement
+//include the template implement
 #include "JAutoPtr.cpp"
 
 

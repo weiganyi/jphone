@@ -19,12 +19,15 @@ public:
     JAutoPtrBase(TYPE* pObject);
     ~JAutoPtrBase();
 
+    //the operator of object return
     TYPE& operator*();
+    //the operator of member access
     TYPE* operator->();
 
     TYPE* GetObject();
 
 private:
+    //the pointer of stored object
     TYPE* m_pObject;
 };
 
@@ -36,6 +39,7 @@ public:
     JAutoPtr(TYPE* pObject);
     ~JAutoPtr();
 
+    //the assignment operator
     JAutoPtr<TYPE>& operator=(const JAutoPtr<TYPE>& rhs);
 
 private:

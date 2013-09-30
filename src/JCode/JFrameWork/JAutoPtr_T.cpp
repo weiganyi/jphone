@@ -64,7 +64,12 @@ template<class TYPE> JAutoPtr<TYPE>& JAutoPtr<TYPE>::operator=(const JAutoPtr<TY
 {
     if (this != &rhs)
     {
+        //destroy the old object
+        //bug: if the object pointer be used by more than one autoptr, release in here will effect
+        //other autoptr.
         Release();
+
+        //save the rhs object pointer
         this->GetObject() = rhs.GetObject();
     }
 

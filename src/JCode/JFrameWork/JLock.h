@@ -19,12 +19,15 @@ public:
     ~JLock();
 
     JVOID Acquire();
+    //if cann't get the lock, still return false
     JBOOL TryAcquire();
     JVOID Release();
 
 private:
+    //critical object
     CRITICAL_SECTION m_CriticalSection;
 
+    //the number that the lock had beed got
     JUINT32 m_uiLockNumber;
 };
 

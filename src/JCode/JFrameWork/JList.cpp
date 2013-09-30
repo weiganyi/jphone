@@ -55,6 +55,7 @@ template<> inline JUINT32 JList<JPER_RECORD>::CopyObject(JList<JPER_RECORD>& rDs
         uiLen = pSrcItem->GetDataLength();
         if (uiLen)
         {
+            //alloc memory for the dst data
             pDstData = 
                 reinterpret_cast<JPER_RECORD*>(JSingleton<JStaticMemory>::instance()->Alloc(uiLen+1));
             if (pDstData)
@@ -71,6 +72,7 @@ template<> inline JUINT32 JList<JPER_RECORD>::CopyObject(JList<JPER_RECORD>& rDs
             }
         }
 
+        //construct the dst item
         pDstItem = new JListItem<JPER_RECORD>(pDstData);
         pDstItem->SetDataLength(uiLen);
         rDst.InsertItem(pDstItem, prevDstItem);

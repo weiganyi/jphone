@@ -1084,7 +1084,8 @@ JUINT32 JLogSrvThread::Run()
 
     do{
         pCommEngine = m_commEngineGroup.HasMessage(JCOMM_SELECT_INDEFINITE);
-        if (pCommEngine && pCommEngine == m_pNotifyCommEngine)  //for thread notify CommEngine
+        //for thread notify CommEngine
+        if (pCommEngine && pCommEngine == m_pNotifyCommEngine)
         {
             uiRet = pCommEngine->RecvMessage(pBuf, JCOMM_MSG_BUF_LEN, &stAddr);
             if (uiRet == 1 && SafeStrcmp(pBuf, "1") ==0)
@@ -1112,11 +1113,13 @@ JUINT32 JLogSrvThread::Run()
                     }
                 }
             }
-            else    //JEvent recv, and route also must be added here.
+            //JEvent recv, and route also must be added here.
+            else
             {
             }
         }
-        else    //other thread JCommEngine
+        //other thread JCommEngine
+        else
         {
         }
     }while(1);

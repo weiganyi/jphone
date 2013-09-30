@@ -63,11 +63,13 @@ JUINT32 JDaemonCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+    //first store the string length into the buffer
 	uiLen = m_strSaveMethod.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the string into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_strSaveMethod.c_str(), uiLen, tmpMaxNum);
@@ -94,8 +96,10 @@ JUINT32 JDaemonCfg::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+    //first get the string length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the string from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -262,24 +266,35 @@ JUINT32 JDaemon::ProcGetCfgEvent(JEvent* pEvent)
     JThread* pThread = JNULL;
     JModuleThread* pModuleThread = JNULL;
 
+    //construct a response object
     pNewEvent = new JEvent(JEVT_DAEMON_GET_CFG_RSP);
+    //construct a deamon cfg object
     pDaemonCfg = new JDaemonCfg;
 	if (pNewEvent && pDaemonCfg)
 	{
 	    pDaemonCfg->SetSaveMethod(m_cfg.GetSaveMethod());
 
+        //set the source process from the destination process of request event
 	    pNewEvent->SetFromProc(pEvent->GetToProc().c_str());
+	    //set the source thread
 	    pNewEvent->SetFromThrd(pEvent->GetToThrd().c_str());
+	    //set the source module
 	    pNewEvent->SetFromMod(pEvent->GetToMod().c_str());
+        //set the destination process from the source process of request event
 	    pNewEvent->SetToProc(pEvent->GetFromProc().c_str());
+	    //set the destination thread
 	    pNewEvent->SetToThrd(pEvent->GetFromThrd().c_str());
+	    //set the destination module
 	    pNewEvent->SetToMod(pEvent->GetFromMod().c_str());
+	    //set the body
 	    pNewEvent->SetBody(pDaemonCfg);
 
+        //get the main framework thread
         pThread = JSingleton<JThreadManager>::instance()->GetThread(JS_T_JMAINTHREAD);
         pModuleThread = dynamic_cast<JModuleThread*>(pThread);
         if (pModuleThread)
         {
+            //get the communication engine to send event
     	    pComEngine = pModuleThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -304,6 +319,7 @@ JUINT32 JDaemon::SetCfgList(JDaemonCfg* pDaemonCfg)
         uiLen = pDaemonCfg->GetSaveMethod().GetLength();
         if (uiLen)
         {
+            //alloc memory from the static memory module
             pDstData = 
                 reinterpret_cast<JPER_RECORD*>(JSingleton<JStaticMemory>::instance()->Alloc(sizeof(JPER_RECORD)+1));
             if (pDstData)
@@ -311,6 +327,8 @@ JUINT32 JDaemon::SetCfgList(JDaemonCfg* pDaemonCfg)
 	            SafeMemset(reinterpret_cast<JCHAR*>(pDstData), 0, sizeof(JPER_RECORD)+1);
                 SafeSprintf(pDstData->strKey, JMAX_STRING_LEN, "%s", JDAEMON_SAVE_METHOD);
                 SafeStrcpy(pDstData->strValue, pDaemonCfg->GetSaveMethod().c_str(), uiLen+1);
+
+                //construct a record list to serialize
                 pDstItem = new JListItem<JPER_RECORD>(pDstData);
                 pDstItem->SetDataLength(sizeof(JPER_RECORD));
                 clsDstList.InsertItem(pDstItem, prevDstItem);
@@ -342,6 +360,7 @@ JUINT32 JDaemon::GetCfgList(JDaemonCfg* pDaemonCfg)
     {
         clsList = m_pSerialization->GetList(JDAEMON_DEFAULT_FILE);
 
+        //get cfg param from the record list
         JListIterator<JPER_RECORD> clsListIter(clsList);
         for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
         {

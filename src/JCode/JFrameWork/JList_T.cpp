@@ -200,8 +200,10 @@ template<class TYPE> JUINT32 JList<TYPE>::InsertItem(JListItem<TYPE>* pItem, JLi
         return JFAILURE;
     }
 
-    if (pTarget)    //insert pItem into the back of the pTarget
+    //insert pItem into the back of the pTarget
+    if (pTarget)
     {
+        //the pTarget is the tail
         if (m_pTail && m_pTail==pTarget)
         {
             pItem->SetPrevItem(pTarget);
@@ -218,8 +220,10 @@ template<class TYPE> JUINT32 JList<TYPE>::InsertItem(JListItem<TYPE>* pItem, JLi
             pTarget->SetNextItem(pItem);
         }
     }
-    else    //insert pItem into the front of the whole JList
+    //insert pItem into the front of the whole JList
+    else
     {
+        //the list isn't null
         if (m_pHead)
         {
             pItem->SetNextItem(m_pHead);
@@ -303,7 +307,7 @@ template<class TYPE> JUINT32 JList<TYPE>::RemoveAllItem()
 	return JSUCCESS;
 }
 
-template<class TYPE> JUINT32 JList<TYPE>::RemoveLastItem()
+template<class TYPE> JUINT32 JList<TYPE>::RemoveTailItem()
 {
     JListItem<TYPE>* pItem = JNULL;
 
@@ -402,11 +406,13 @@ template<class TYPE> JUINT32 JList<TYPE>::CopyObject(JList<TYPE>& rDst, JList<TY
         uiLen = SafeStrlen(reinterpret_cast<JCHAR*>(pSrcData));
         if (uiLen)
         {
+            //alloc memory for the dst data
             pDstData = reinterpret_cast<TYPE*>(JSingleton<JStaticMemory>::instance()->Alloc(uiLen+1));
             if (pDstData)
             {
 	            SafeMemset(reinterpret_cast<JCHAR*>(pDstData), 0, uiLen+1);
-                SafeStrcpy(reinterpret_cast<JCHAR*>(pDstData), reinterpret_cast<JCHAR*>(pSrcData), uiLen+1);
+                SafeStrcpy(reinterpret_cast<JCHAR*>(pDstData), 
+                    reinterpret_cast<JCHAR*>(pSrcData), uiLen+1);
             }
             else
             {
@@ -416,6 +422,7 @@ template<class TYPE> JUINT32 JList<TYPE>::CopyObject(JList<TYPE>& rDst, JList<TY
             }
         }
 
+        //construct the dst item
         pDstItem = new JListItem<TYPE>(pDstData);
         rDst.InsertItem(pDstItem, prevDstItem);
 

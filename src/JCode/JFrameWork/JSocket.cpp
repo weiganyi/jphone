@@ -125,7 +125,7 @@ JINT32 JUdpSocket::Select(const JUINT32 uiMilisecond)
     max_fd = m_fd;
 
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
-        JLOG_MOD_SOCKET, "JCommEngineGroup::HasMessage");
+        JLOG_MOD_SOCKET, "JUdpSocket::Select");
 
     if (uiMilisecond)
     {

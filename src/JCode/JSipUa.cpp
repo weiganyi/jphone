@@ -2440,7 +2440,7 @@ JUINT32 JPjSipUa::StoreContactNumber()
     {
         if (m_contactListNumber >= JPJSIP_MAX_NUMBER)
         {
-            m_contactList.RemoveLastItem();
+            m_contactList.RemoveTailItem();
 
             m_contactListNumber--;
         }

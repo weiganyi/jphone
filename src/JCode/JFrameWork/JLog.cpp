@@ -13,6 +13,7 @@ namespace JFrameWork{
 
 JFmt& set(JLOG_MODULE module, JLOG_LEVEL level)
 {
+    //static object, to avoid construct object high frequently
     static JFmt clsFmt;
 
     clsFmt.m_Module = module;
@@ -89,6 +90,7 @@ JUINT32 JLogTimeDecorator::DecoratorBuf(JLogOutput* pLogOutput, JCHAR* pBuf)
             m_newLineStart = JFALSE;
         }
 
+        //if line end, output this line then start a new line
         pBoundary = SafeStrstr(pOffset, "\n");
         if (pBoundary)
         {
@@ -96,6 +98,7 @@ JUINT32 JLogTimeDecorator::DecoratorBuf(JLogOutput* pLogOutput, JCHAR* pBuf)
             SafeMemcat(m_outputCatchBuf, pOffset, uiLen, JLOG_MAX_BUF_LEN);
             m_newLineStart = JTRUE;
         }
+        //otherwise, store the log and return
         else
         {
             uiLen = SafeStrlen(pOffset);
@@ -247,6 +250,7 @@ JLogOutputRemote::JLogOutputRemote(JString& rLocalAddr,
         rRemoteAddr.GetLength() &&
         uiRemotePort)
     {
+        //create a communication connector
         m_pCommConnector = new JCommConnector;
         if (m_pCommConnector)
         {
@@ -260,6 +264,7 @@ JLogOutputRemote::JLogOutputRemote(JString& rLocalAddr,
             rmtAddr.sin_port = htons(uiRemotePort);
             m_pCommConnector->SetRemoteAddr(&rmtAddr);
 
+            //if connect succ, return a communication engine
             m_pCommEngine = m_pCommConnector->Connect();
         }
     }
@@ -313,6 +318,7 @@ JUINT32 JLogOutputRemote::RawPrint(JCHAR* ptrBuf)
 
     if (m_pCommEngine)
     {
+        //add a endline token
         SafeStrncat(ptrBuf, "\n", 1, JLOG_MAX_BUF_LEN);
 
         uiLen = SafeStrlen(ptrBuf);
@@ -397,11 +403,13 @@ JUINT32 JLogCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+    //first store the address length into the buffer
 	uiLen = m_strAddress.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the address into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_strAddress.c_str(), uiLen, tmpMaxNum);
@@ -410,11 +418,13 @@ JUINT32 JLogCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //first store the port length into the buffer
 	uiLen = m_strPort.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the port into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_strPort.c_str(), uiLen, tmpMaxNum);
@@ -423,11 +433,13 @@ JUINT32 JLogCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //first store the output file length into the buffer
 	uiLen = m_strOutputFile.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the output file into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_strOutputFile.c_str(), uiLen, tmpMaxNum);
@@ -436,11 +448,13 @@ JUINT32 JLogCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //first store the output remote length into the buffer
 	uiLen = m_strOutputRemote.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the output remote into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_strOutputRemote.c_str(), uiLen, tmpMaxNum);
@@ -467,8 +481,10 @@ JUINT32 JLogCfg::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+    //first get the address length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the address from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -476,8 +492,10 @@ JUINT32 JLogCfg::DeSerialize(JCHAR* pBuf)
 		pOffset += *pLen;
 	}
 
+    //first get the port length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the port from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -485,8 +503,10 @@ JUINT32 JLogCfg::DeSerialize(JCHAR* pBuf)
 		pOffset += *pLen;
 	}
 
+    //first get the output file length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the output file from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -494,8 +514,10 @@ JUINT32 JLogCfg::DeSerialize(JCHAR* pBuf)
 		pOffset += *pLen;
 	}
 
+    //first get the output remote length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the output remote from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -580,6 +602,8 @@ JUINT32 OnCheckConnect(JVOID* pData)
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_LOG, "OnCheckConnect");
 
+    //here cann't check connect, because this timeout callback is in the individual thread
+    //so create a event and send it to the log module.
     pEvent = new JEvent(JEVT_LOG_CHECK_CONNECT);
     if (pEvent)
     {
@@ -837,6 +861,7 @@ JUINT32 JLog::SetLogMethod(const JLOG_OUTPUT uiOutput)
                 delete m_pOutputRemote;
                 m_pOutputRemote = JNULL;
             }
+            //start a timer to check tcp connect with log server
             StartCheckConnect();
         }
     }
@@ -898,10 +923,12 @@ JUINT32 JLog::SetFuncEnterTrace(const JLOG_MODULE module, JCHAR* ptrFuncName)
 
     JAutoPtr<JLock> clsLockAutoPtr(&m_TraceLock);
 
+    //construct function enter log message
     SafeSprintf(strBuf, JLOG_MAX_BUF_LEN, "FUNC %s enter\n", ptrFuncName);
 
     Print(module, JLOG_ENTER_LEVEL, strBuf);
 
+    //store function trace in the array base on different thread
     iRet = FindThreadId(&uiThreadId);
     if (iRet == JSUCCESS || iRet == JFAILURE)
     {
@@ -939,16 +966,19 @@ JUINT32 JLog::SetFuncExitTrace(const JLOG_MODULE module, JCHAR* ptrFuncName)
 
     JAutoPtr<JLock> clsLockAutoPtr(&m_TraceLock);
 
+    //construct function exit log message
     SafeSprintf(strBuf, JLOG_MAX_BUF_LEN, "FUNC %s exit\n", ptrFuncName);
 
     Print(module, JLOG_EXIT_LEVEL, strBuf);
 
+    //clean function trace in the array base on different thread
     iRet = FindThreadId(&uiThreadId);
     if (iRet == JSUCCESS)
     {
         iTmpOffset = m_currOffset[uiThreadId]-1;
         while (iTmpOffset>=0)
         {
+            //find a match function name
             if (m_funcTrace[uiThreadId][iTmpOffset] && 
                 SafeStrcmp(m_funcTrace[uiThreadId][iTmpOffset], ptrFuncName) == 0)
             {
@@ -961,6 +991,7 @@ JUINT32 JLog::SetFuncExitTrace(const JLOG_MODULE module, JCHAR* ptrFuncName)
                 bMatch = JTRUE;
                 break;
             }
+            //continue to match, till a match be found
             else
             {
                 iTmpOffset--;
@@ -987,6 +1018,7 @@ JUINT32 JLog::GetFuncTrace(JUINT32 uiMaxNum, JCHAR* ucFuncTrace[])
 
     JAutoPtr<JLock> clsLockAutoPtr(&m_TraceLock);
 
+    //return the current function call stack
     iRet = FindThreadId(&uiThreadId);
     if (iRet == JSUCCESS)
     {
@@ -1034,6 +1066,7 @@ JUINT32 JLog::InitFunc()
 
     if (m_pSerialization)
     {
+        //get config to initialize object
         GetCfgList(&m_cfg);
 
         if (m_cfg.GetOutputFile() == JLOG_FILE_DISABLE)
@@ -1132,6 +1165,7 @@ JUINT32 JLog::ProcSetCfgEvent(JLogCfg* pLogCfg)
         return JFAILURE;
     }
 
+    //store the config into the log object
     if (pLogCfg->GetLogAddress() != m_cfg.GetLogAddress())
     {
         m_cfg.SetLogAddress(pLogCfg->GetLogAddress());
@@ -1192,6 +1226,7 @@ JUINT32 JLog::ProcGetCfgEvent(JEvent* pEvent)
     pLogCfg = new JLogCfg;
     if (pNewEvent && pLogCfg)
     {
+        //get the config from the log object
         pLogCfg->SetLogAddress(m_cfg.GetLogAddress());
         pLogCfg->SetLogPort(m_cfg.GetLogPort());
         pLogCfg->SetOutputFile(m_cfg.GetOutputFile());
@@ -1209,6 +1244,7 @@ JUINT32 JLog::ProcGetCfgEvent(JEvent* pEvent)
         pModuleThread = dynamic_cast<JModuleThread*>(pThread);
         if (pModuleThread)
         {
+            //get public communication engine shared in the module thread
     	    pComEngine = pModuleThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -1228,6 +1264,7 @@ JUINT32 JLog::SetCfgList(JLogCfg* pLogCfg)
     JListItem<JPER_RECORD>* prevDstItem = JNULL;
     JPER_RECORD* pDstData = JNULL;
 
+    //construct a record list to serialize
     if (m_pSerialization)
     {
         uiLen = pLogCfg->GetLogAddress().GetLength();
@@ -1332,6 +1369,7 @@ JUINT32 JLog::GetCfgList(JLogCfg* pLogCfg)
     JListItem<JPER_RECORD>* pSrcItem = JNULL;
     JPER_RECORD* pSrcData = JNULL;
 
+    //get cfg param from the record list
     if (m_pSerialization)
     {
         clsSrcList = m_pSerialization->GetList(JLOG_CFG_FILE);
@@ -1379,6 +1417,7 @@ JUINT32 JLog::DoCheckConnect()
     JCHAR strBuf[JMAX_STRING_LEN] = {0};
     JSOCKADDR_IN stAddr;
 
+    //if m_pOutputRemote not exist, create it
     if (!m_pOutputRemote)
     {
         strLclAddr = JLOG_LOCAL_ADDR;
@@ -1393,6 +1432,7 @@ JUINT32 JLog::DoCheckConnect()
     }
     else
     {
+        //if the socket have a message but the length is zero, it means tcp connect break
         pCommEngine = m_pOutputRemote->GetCommEngine();
         if (pCommEngine)
         {
@@ -1459,6 +1499,7 @@ JINT32 JLog::FindThreadId(JUINT32* uiThreadId)
     JUINT32 uiIdx = 0;
     JUINT32 uiThread = 0;
 
+    //find a available array member, save thread id and return sequence
     uiThread = GetCurrentThreadId();
     for (uiIdx=0; uiIdx<JLOG_MAX_THREAD_NUM; uiIdx++)
     {

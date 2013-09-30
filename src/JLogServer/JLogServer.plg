@@ -6,41 +6,41 @@
 --------------------Configuration: JLogServer - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating command line "rc.exe /l 0x804 /fo"Debug/JLogServer.res" /d "_DEBUG" /d "_AFXDLL" "D:\code\jphone\src\JLogServer\JLogServer.rc"" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2625.tmp" with contents
+Creating command line "rc.exe /l 0x804 /fo"Debug/JLogServer.res" /d "_DEBUG" /d "_AFXDLL" "D:\download\jphone\src\JLogServer\JLogServer.rc"" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F1.tmp" with contents
 [
-/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../include/mxml-2.7" /I "../include/mysql" /I "../include/pjproject-1.10" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "JPURE_CORE" /D JPRUDUCT_PORT_OFFSET=10000 /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"D:\code\jphone\src\JCode\JFrameWork\JDaemon.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JEvent.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JLock.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JLog.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JMemory.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JObject.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JRoute.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JSerialization.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JSocket.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JString.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JThread.cpp"
-"D:\code\jphone\src\JCode\JFrameWork\JTimer.cpp"
-"D:\code\jphone\src\JCode\JLogSrv.cpp"
-"D:\code\jphone\src\JCode\JLogSrvAgent.cpp"
-"D:\code\jphone\src\JCode\JLogSrvThread.cpp"
-"D:\code\jphone\src\JLogServer\CfgListen.cpp"
-"D:\code\jphone\src\JLogServer\JLogServer.cpp"
-"D:\code\jphone\src\JLogServer\JLogServerDoc.cpp"
-"D:\code\jphone\src\JLogServer\JLogServerView.cpp"
-"D:\code\jphone\src\JLogServer\MainFrm.cpp"
+/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../dep_inc/mxml-2.7" /I "../dep_inc/mysql" /I "../dep_inc/pjproject-1.10" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "JPURE_CORE" /D JPRUDUCT_PORT_OFFSET=10000 /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\download\jphone\src\JCode\JFrameWork\JDaemon.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JEvent.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JLock.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JLog.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JMemory.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JObject.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JRoute.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JSerialization.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JSocket.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JString.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JThread.cpp"
+"D:\download\jphone\src\JCode\JFrameWork\JTimer.cpp"
+"D:\download\jphone\src\JCode\JLogSrv.cpp"
+"D:\download\jphone\src\JCode\JLogSrvAgent.cpp"
+"D:\download\jphone\src\JCode\JLogSrvThread.cpp"
+"D:\download\jphone\src\JLogServer\CfgListen.cpp"
+"D:\download\jphone\src\JLogServer\JLogServer.cpp"
+"D:\download\jphone\src\JLogServer\JLogServerDoc.cpp"
+"D:\download\jphone\src\JLogServer\JLogServerView.cpp"
+"D:\download\jphone\src\JLogServer\MainFrm.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2625.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2626.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F1.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F2.tmp" with contents
 [
-/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../include/mxml-2.7" /I "../include/mysql" /I "../include/pjproject-1.10" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "JPURE_CORE" /D JPRUDUCT_PORT_OFFSET=10000 /FR"Debug/" /Fp"Debug/JLogServer.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"D:\code\jphone\src\JLogServer\StdAfx.cpp"
+/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../dep_inc/mxml-2.7" /I "../dep_inc/mysql" /I "../dep_inc/pjproject-1.10" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /D "_MBCS" /D "JPURE_CORE" /D JPRUDUCT_PORT_OFFSET=10000 /FR"Debug/" /Fp"Debug/JLogServer.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\download\jphone\src\JLogServer\StdAfx.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2626.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2627.tmp" with contents
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F2.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F3.tmp" with contents
 [
-ws2_32.lib winmm.lib ../lib/mysql/libmysql.lib ../lib/mxml-2.7/mxml1.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/JLogServer.pdb" /debug /machine:I386 /out:"Debug/JLogServer.exe" /pdbtype:sept 
+ws2_32.lib winmm.lib ../dep_lib/mysql/libmysql.lib ../dep_lib/mxml-2.7/mxml1.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/JLogServer.pdb" /debug /machine:I386 /out:"Debug/JLogServer.exe" /pdbtype:sept 
 .\Debug\JDaemon.obj
 .\Debug\JEvent.obj
 .\Debug\JLock.obj
@@ -64,7 +64,7 @@ ws2_32.lib winmm.lib ../lib/mysql/libmysql.lib ../lib/mxml-2.7/mxml1.lib /nologo
 .\Debug\StdAfx.obj
 .\Debug\JLogServer.res
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2627.tmp"
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F3.tmp"
 <h3>Output Window</h3>
 Compiling resources...
 Compiling...
@@ -92,7 +92,7 @@ JLogServerView.cpp
 MainFrm.cpp
 Generating Code...
 Linking...
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2629.tmp" with contents
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F5.tmp" with contents
 [
 /nologo /o"Debug/JLogServer.bsc" 
 .\Debug\StdAfx.sbr
@@ -116,7 +116,7 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2629.tmp" with co
 .\Debug\JLogServerDoc.sbr
 .\Debug\JLogServerView.sbr
 .\Debug\MainFrm.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP2629.tmp"
+Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F5.tmp"
 Creating browse info file...
 <h3>Output Window</h3>
 

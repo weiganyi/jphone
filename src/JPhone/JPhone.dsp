@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_AFXDLL" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../include/pjproject-1.10" /I "../include/mxml-2.7" /I "../include/mysql" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /D JPRUDUCT_PORT_OFFSET=0 /FR /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../dep_inc/pjproject-1.10" /I "../dep_inc/mxml-2.7" /I "../dep_inc/mysql" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /D JPRUDUCT_PORT_OFFSET=0 /FR /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x804 /d "_DEBUG" /d "_AFXDLL"
@@ -78,7 +78,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 ws2_32.lib winmm.lib kernel32.lib ../lib/pjproject-1.10/pjlib-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjlib-util-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/libg7221codec-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/libgsmcodec-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/libilbccodec-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/libmilenage-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/libportaudio-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/libresample-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/libspeex-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/libsrtp-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjmedia-audiodev-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjmedia-codec-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjmedia-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjnath-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjsip-core-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjsip-simple-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjsip-ua-i386-win32-vc6-debug.lib ../lib/pjproject-1.10/pjsua-lib-i386-win32-vc6-debug.lib ../lib/mysql/libmysql.lib ../lib/mxml-2.7/mxml1.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 ws2_32.lib winmm.lib kernel32.lib ../dep_lib/pjproject-1.10/pjlib-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjlib-util-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libg7221codec-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libgsmcodec-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libilbccodec-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libmilenage-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libportaudio-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libresample-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libspeex-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libsrtp-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjmedia-audiodev-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjmedia-codec-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjmedia-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjnath-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjsip-core-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjsip-simple-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjsip-ua-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjsua-lib-i386-win32-vc6-debug.lib ../dep_lib/mysql/libmysql.lib ../dep_lib/mxml-2.7/mxml1.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
 # SUBTRACT LINK32 /nodefaultlib
 
 !ENDIF 

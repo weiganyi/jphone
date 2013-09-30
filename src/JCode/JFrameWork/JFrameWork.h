@@ -14,6 +14,7 @@
 //undeclared identifier¡±
 #define  _WIN32_WINNT   0x0400
 
+//header file of the system lib
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -25,14 +26,14 @@
 #include <typeinfo.h> 
 #include <new.h>
 
-
+//header file of the project class
 #include "JObject.h"
 #include "JString.h"
 #include "JLock.h"
 #include "JAutoPtr_T.h"
 #include "JLog.h"
 #include "JSingleton_T.h"
-//the follow class use JLog
+//the following class will use the class JLog
 #include "JList_T.h"
 #include "JSocket.h"
 #include "JTimer.h"
