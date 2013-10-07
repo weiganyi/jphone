@@ -36,19 +36,20 @@ typedef struct sockaddr     JSOCKADDR;
 #define JNULL               0
 #define JINVALID            -1
 
+//module socket address in the main thread
 #define JPHONE_LOCAL_ADDR           "127.0.0.1"
 #define JTHREAD_LOCAL_ADDR          JPHONE_LOCAL_ADDR
-#define JTHREAD_LOCAL_PORT          10000+JPRUDUCT_PORT_OFFSET
+#define JTHREAD_LOCAL_PORT          10000+JPRODUCT_PORT_OFFSET
 #define JTIMER_LOCAL_ADDR           JPHONE_LOCAL_ADDR
-#define JTIMER_LOCAL_PORT           10001+JPRUDUCT_PORT_OFFSET
+#define JTIMER_LOCAL_PORT           10001+JPRODUCT_PORT_OFFSET
 #define JLOG_LOCAL_ADDR             JPHONE_LOCAL_ADDR
-#define JLOG_LOCAL_PORT             10002+JPRUDUCT_PORT_OFFSET
+#define JLOG_LOCAL_PORT             10002+JPRODUCT_PORT_OFFSET
 
 #define JMAX_STRING_LEN         64
 #define JMAX_BUFFER_LEN         256
 
 
-//class predeclare
+//class predeclare for compile passing
 class JStaticMemory;
 class JEvent;
 class JSocket;
@@ -85,6 +86,7 @@ public:
     virtual ~JObject();
 
 protected:
+    //safe string operate function
     JUINT32 SafeStrlen(const JCHAR* str);
     JUINT32 SafeStrcmp(JCHAR* dst, const JCHAR* src);
     JCHAR* SafeStrcpy(JCHAR* dst, const JCHAR* src, const JUINT32 maxLen);
@@ -98,18 +100,21 @@ protected:
     JCHAR* SafeStrstr(const JCHAR* src, const JCHAR* substr);
     JCHAR* SafeStrchr(const JCHAR* src, const JUINT32 ch);
 
+    //file operate function
     FILE* SafeFopen(const JCHAR* name, const JCHAR* param);
     JUINT32 SafeFclose(FILE* fd);
     JUINT32 SafeFprintf(FILE* fd, const JCHAR* fmt, ...);
     JUINT32 SafeFflush(FILE* fd);
     JCHAR* SafeFgets(JCHAR* buf, const JUINT32 len, FILE* fd);
 
+    //system time function
     JUINT32 GetSysTime(JSYSTIME *ptrSysTime);
     JINT32 CmpSysTime(JSYSTIME *srcSysTime, JSYSTIME *dstSysTime);
     JSYSTIME* AddSysTime(JSYSTIME *ptrSysTime, JUINT32 milliseconds);
 
     JBOOL IsDtmf(JINT32 iDigit);
 
+    //get local mechine address
     JUINT32 GetLocalAddr(JString& rAddr, JString& rIfAddr);
 };
 

@@ -6,38 +6,30 @@
 --------------------Configuration: JPhone - Win32 Debug--------------------
 </h3>
 <h3>Command Lines</h3>
-Creating command line "rc.exe /l 0x804 /fo"Debug/JPhone.res" /d "_DEBUG" /d "_AFXDLL" "D:\download\jphone\src\JPhone\JPhone.rc"" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F8.tmp" with contents
+Creating temporary file "C:\Users\ADMINI~1\AppData\Local\Temp\RSP483.tmp" with contents
 [
-/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../dep_inc/pjproject-1.10" /I "../dep_inc/mxml-2.7" /I "../dep_inc/mysql" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /D JPRUDUCT_PORT_OFFSET=0 /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"D:\download\jphone\src\JCode\JFrameWork\JDaemon.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JEvent.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JLock.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JLog.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JMemory.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JObject.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JRoute.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JSerialization.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JSocket.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JString.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JThread.cpp"
-"D:\download\jphone\src\JCode\JFrameWork\JTimer.cpp"
-"D:\download\jphone\src\JCode\JPhoneAgent.cpp"
-"D:\download\jphone\src\JCode\JPhoneThread.cpp"
-"D:\download\jphone\src\JCode\JSipUa.cpp"
-"D:\download\jphone\src\JPhone\CfgDlg.cpp"
-"D:\download\jphone\src\JPhone\ContactDlg.cpp"
-"D:\download\jphone\src\JPhone\JPhone.cpp"
-"D:\download\jphone\src\JPhone\JPhoneDlg.cpp"
+/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../dep_inc/pjproject-1.10" /I "../dep_inc/mxml-2.7" /I "../dep_inc/mysql" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /D JPRODUCT_PORT_OFFSET=0 /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"E:\download\jphone\src\JCode\JFrameWork\JDaemon.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JEvent.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JLock.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JLog.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JMemory.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JObject.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JRoute.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JSerialization.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JSocket.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JString.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JThread.cpp"
+"E:\download\jphone\src\JCode\JFrameWork\JTimer.cpp"
+"E:\download\jphone\src\JCode\JPhoneAgent.cpp"
+"E:\download\jphone\src\JCode\JPhoneThread.cpp"
+"E:\download\jphone\src\JCode\JSipUa.cpp"
+"E:\download\jphone\src\JPhone\ContactDlg.cpp"
+"E:\download\jphone\src\JPhone\JPhone.cpp"
+"E:\download\jphone\src\JPhone\JPhoneDlg.cpp"
 ]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F8.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F9.tmp" with contents
-[
-/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../JCode" /I "../JCode/JFrameWork" /I "../dep_inc/pjproject-1.10" /I "../dep_inc/mxml-2.7" /I "../dep_inc/mysql" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_AFXDLL" /D JPRUDUCT_PORT_OFFSET=0 /FR"Debug/" /Fp"Debug/JPhone.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
-"D:\download\jphone\src\JPhone\StdAfx.cpp"
-]
-Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71F9.tmp" 
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71FA.tmp" with contents
+Creating command line "cl.exe @C:\Users\ADMINI~1\AppData\Local\Temp\RSP483.tmp" 
+Creating temporary file "C:\Users\ADMINI~1\AppData\Local\Temp\RSP484.tmp" with contents
 [
 ws2_32.lib winmm.lib kernel32.lib ../dep_lib/pjproject-1.10/pjlib-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjlib-util-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libg7221codec-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libgsmcodec-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libilbccodec-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libmilenage-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libportaudio-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libresample-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libspeex-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/libsrtp-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjmedia-audiodev-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjmedia-codec-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjmedia-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjnath-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjsip-core-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjsip-simple-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjsip-ua-i386-win32-vc6-debug.lib ../dep_lib/pjproject-1.10/pjsua-lib-i386-win32-vc6-debug.lib ../dep_lib/mysql/libmysql.lib ../dep_lib/mxml-2.7/mxml1.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/JPhone.pdb" /debug /machine:I386 /out:"Debug/JPhone.exe" /pdbtype:sept 
 .\Debug\JDaemon.obj
@@ -62,35 +54,32 @@ ws2_32.lib winmm.lib kernel32.lib ../dep_lib/pjproject-1.10/pjlib-i386-win32-vc6
 .\Debug\StdAfx.obj
 .\Debug\JPhone.res
 ]
-Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71FA.tmp"
+Creating command line "link.exe @C:\Users\ADMINI~1\AppData\Local\Temp\RSP484.tmp"
 <h3>Output Window</h3>
-Compiling resources...
 Compiling...
-StdAfx.cpp
+JMemory.cpp
+JObject.cpp
+JSerialization.cpp
+JPhoneAgent.cpp
+JPhoneThread.cpp
+Generating Code...
 Compiling...
 JDaemon.cpp
 JEvent.cpp
 JLock.cpp
 JLog.cpp
-JMemory.cpp
-JObject.cpp
 JRoute.cpp
-JSerialization.cpp
 JSocket.cpp
 JString.cpp
 JThread.cpp
 JTimer.cpp
-JPhoneAgent.cpp
-JPhoneThread.cpp
 JSipUa.cpp
-CfgDlg.cpp
 ContactDlg.cpp
 JPhone.cpp
 JPhoneDlg.cpp
 Generating Code...
 Linking...
-LINK : warning LNK4098: defaultlib "LIBCMTD" conflicts with use of other libs; use /NODEFAULTLIB:library
-Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71FC.tmp" with contents
+Creating temporary file "C:\Users\ADMINI~1\AppData\Local\Temp\RSP27BE.tmp" with contents
 [
 /nologo /o"Debug/JPhone.bsc" 
 .\Debug\StdAfx.sbr
@@ -113,14 +102,14 @@ Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71FC.tmp" with co
 .\Debug\ContactDlg.sbr
 .\Debug\JPhone.sbr
 .\Debug\JPhoneDlg.sbr]
-Creating command line "bscmake.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP71FC.tmp"
+Creating command line "bscmake.exe @C:\Users\ADMINI~1\AppData\Local\Temp\RSP27BE.tmp"
 Creating browse info file...
 <h3>Output Window</h3>
 
 
 
 <h3>Results</h3>
-JPhone.exe - 0 error(s), 1 warning(s)
+JPhone.exe - 0 error(s), 0 warning(s)
 </pre>
 </body>
 </html>

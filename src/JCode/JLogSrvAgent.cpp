@@ -23,19 +23,19 @@ JLogServerAgent::JLogServerAgent()
     JString strThrdName;
     JString strLocalAddr;
 
-    /* create all object */
+    //create all object
     pLog = JSingleton<JLog>::instance();
     pStaticMemory = JSingleton<JStaticMemory>::instance();
     pRoute = JSingleton<JRoute>::instance();
 
-    /* set log level */
+    //set log level
     pLog->SetLogLevel(JLOG_MOD_ALL, JLOG_DEBUG_LEVEL);
     //ptrLog->SetLogLevel(JLOG_MOD_LOGSERVER_AGENT, JLOG_ENTER_LEVEL);
 
-    /* set log output method */
+    //set log output method
     pLog->SetLogMethod(JLOG_OUTPUT_LOCAL);
 
-    //create JAgentThread and add into JThreadManager
+    //create JAgentThread and register into JThreadManager
     strThrdName = JS_T_JLOGSRVAGENT;
     strLocalAddr = JLOGSERVER_AGENT_LOCAL_ADDR;
 	m_pAgentThread = new JAgentThread(&strThrdName, &strLocalAddr, JLOGSERVER_AGENT_LOCAL_PORT);
@@ -50,7 +50,7 @@ JLogServerAgent::JLogServerAgent()
 
 JLogServerAgent::~JLogServerAgent()
 {
-    /* destroy all object */
+    //destroy all object
     if (m_pAgentThread)
     {
         delete m_pAgentThread;
@@ -71,6 +71,7 @@ JUINT32 JLogServerAgent::SetLogSrvCfg(JLogSrvCfg* pLogSrvCfg)
         JLOG_MOD_LOGSERVER_AGENT, "JLogServerAgent::SetLogSrvCfg");
 
     pEvent = new JEvent(JEVT_LOGSRV_SET_CFG);
+    //construct a server config object and put it into the event body
     pLogSrvCfgBody = new JLogSrvCfg;
 	if (pEvent && pLogSrvCfgBody)
 	{
@@ -85,6 +86,7 @@ JUINT32 JLogServerAgent::SetLogSrvCfg(JLogSrvCfg* pLogSrvCfg)
 	    pEvent->SetToMod(JNULL);
 	    pEvent->SetBody(pLogSrvCfgBody);
 
+		//get thread object of the log server agent
         pThread = JSingleton<JThreadManager>::instance()->GetThread(JS_T_JLOGSRVAGENT);
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
@@ -174,18 +176,21 @@ JUINT32 JLogServerAgent::GetLogSrvCfgRsp(JLogSrvCfg* pLogSrvCfg)
         pCommEngine = m_pAgentThread->GetCommEngineGroup().HasMessage(uiInterval);
         if (pCommEngine && pCommEngine == m_pAgentThread->GetNotifyCommEngine())
         {
+        	//if has event, check notify message first
             uiRet = pCommEngine->RecvMessage(pBuf, JCOMM_MSG_BUF_LEN, &stAddr);
             if (uiRet == 1 && SafeStrcmp(pBuf, "1") ==0)
             {
+            	//dequeue event
                 pListItem = m_pAgentThread->DeQueueEvent();
                 if (pListItem)
                 {
+                	//get event from listitem
                     pEvent = pListItem->GetData();
                     if (pEvent)
                     {
                         pType = pEvent->GetEventType();
                         pLogSrvCfgBody = dynamic_cast<JLogSrvCfg*>(pEvent->GetBody());
-						
+
                         if (pType == JEVT_LOGSRV_GET_CFG_RSP && pLogSrvCfgBody)
                         {
                         	pLogSrvCfg->SetListenAddr(pLogSrvCfgBody->GetListenAddr());
@@ -261,6 +266,7 @@ JUINT32 JLogServerAgent::GetHasNewMsg(JLogSrvNumber* pLogSrvNumber)
     pLogSrvNumberBody = new JLogSrvNumber;
 	if (pEvent && pLogSrvNumberBody)
 	{
+		//set the server number need to check new message
 		pLogSrvNumberBody->SetSrvNumber(pLogSrvNumber->GetSrvNumber());
 
 	    pEvent->SetFromProc(JS_P_JMAINPROC);
@@ -325,12 +331,15 @@ JUINT32 JLogServerAgent::GetHasNewMsgRsp(JLogSrvHasNewMsg* pLogSrvHasNewMsg)
         pCommEngine = m_pAgentThread->GetCommEngineGroup().HasMessage(uiInterval);
         if (pCommEngine && pCommEngine == m_pAgentThread->GetNotifyCommEngine())
         {
+        	//if has event, check notify message first
             uiRet = pCommEngine->RecvMessage(pBuf, JCOMM_MSG_BUF_LEN, &stAddr);
             if (uiRet == 1 && SafeStrcmp(pBuf, "1") ==0)
             {
+            	//dequeue event
                 pListItem = m_pAgentThread->DeQueueEvent();
                 if (pListItem)
                 {
+                	//get event from listitem
                     pEvent = pListItem->GetData();
                     if (pEvent)
                     {
@@ -375,10 +384,12 @@ JUINT32 JLogServerAgent::GetLogMsg(JCHAR* currLogSrv,
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_LOGSERVER_AGENT, "JLogServerAgent::GetLogMsg");
 
+	//construct the thread name need to get log
     SafeStrcpy(strThrdName, JS_T_JLOGMSG_PREFIX, JMAX_STRING_LEN);
     uiLen = SafeStrlen(currLogSrv);
     SafeStrncat(strThrdName, currLogSrv, uiLen, JMAX_STRING_LEN);
 
+	//get the log message thread object
     pThread = pThreadManager->GetThread(strThrdName);
     if (pThread)
     {

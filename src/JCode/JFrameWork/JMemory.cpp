@@ -22,6 +22,7 @@ JMemory::~JMemory()
 }
 
 //trunk memory section
+//define how size for every block and how much block for one type block
 JTRUNK_MEMORY_CFG gTrunkMemoryCfg[] = {
  {JTMEM_BLK_SIZE1, JTMEM_BLK_NUM1},
  {JTMEM_BLK_SIZE2, JTMEM_BLK_NUM2},
@@ -80,10 +81,13 @@ JUINT32 JTrunkMemory::Init()
     for (idx=0; idx<m_blkTypeNum; idx++)
     {
         m_blkSize[idx] = gTrunkMemoryCfg[idx].uiSize;
+        //total size must add header and tail space
         m_blkTotalSize[idx] = gTrunkMemoryCfg[idx].uiSize+sizeof(JTRUNK_HDR)+sizeof(JTRUNK_TAL);
+        //through size factor to control the number of every type block
         m_blkNum[idx] = gTrunkMemoryCfg[idx].uiNum/m_eSizeType;
     }
 
+	//calculate the total size for all trunk memory block
     for (idx=0; idx<m_blkTypeNum; idx++)
     {
         uiTotalSize += (m_blkTotalSize[idx] * m_blkNum[idx]);
@@ -101,12 +105,14 @@ JUINT32 JTrunkMemory::Init()
 
     SafeMemset(m_pTrunkMemory, 0, uiTotalSize+1);
 
+	//init the start address for every type block
     m_blkStartAddr[0] = m_pTrunkMemory;
     for (idx=1; idx<m_blkTypeNum; idx++)
     {
         m_blkStartAddr[idx] = m_blkStartAddr[idx-1] + (m_blkTotalSize[idx-1] * m_blkNum[idx-1]);
     }
 
+	//init block header and tail for every type block
     for (idx=0; idx<m_blkTypeNum; idx++)
     {
         for (idx2=0; idx2<m_blkNum[idx]; idx2++)
@@ -119,6 +125,7 @@ JUINT32 JTrunkMemory::Init()
         }
     }
 
+	//init free block number
     for (idx=0; idx<m_blkTypeNum; idx++)
     {
         m_blkFreeNum[idx] = m_blkNum[idx];
@@ -146,6 +153,7 @@ JCHAR* JTrunkMemory::Alloc(const JUINT32 uiLen)
         return JNULL;
     }
 
+	//find the proper block to alloc
     for (idx=0; idx<m_blkTypeNum; idx++)
     {
         if (uiLen < m_blkSize[idx])
@@ -159,11 +167,13 @@ JCHAR* JTrunkMemory::Alloc(const JUINT32 uiLen)
             for (idx2=0; idx2<m_blkNum[idx]; idx2++)
             {
                 pBlkHdr = reinterpret_cast<JTRUNK_HDR*>(m_blkStartAddr[idx] + idx2*m_blkTotalSize[idx]);
+                //find a free block to alloc
                 if (!pBlkHdr->ubIsUsed)
                 {
                     pBlkHdr->ubIsUsed = JTRUE;
                     pBlkHdr->usAllocSize = uiLen;
 
+					//remeber the call function stack
                     JSingleton<JLog>::instance()->GetFuncTrace(JTMEM_CALL_TRACE_NUM, pBlkHdr->uiCallTrace);
 
                     m_blkFreeNum[idx]--;
@@ -200,6 +210,8 @@ JVOID JTrunkMemory::Free(JCHAR* ptrAddr)
         return;
     }
 
+	//forward header size to get this memory start address
+	//find the memory block belong to what type of memory trunk
     pBlkHdr = reinterpret_cast<JTRUNK_HDR*>(ptrAddr-sizeof(JTRUNK_HDR));
     for (idx=0; idx<m_blkTypeNum; idx++)
     {
@@ -218,6 +230,7 @@ JVOID JTrunkMemory::Free(JCHAR* ptrAddr)
 
     for (idx2=0; idx2<m_blkNum[idx]; idx2++)
     {
+    	//check to memory whether belong to block list
         pStartPos = reinterpret_cast<JTRUNK_HDR*>(m_blkStartAddr[idx] + (m_blkTotalSize[idx] * idx2));
         if (pStartPos == pBlkHdr)
         {
@@ -237,6 +250,7 @@ JVOID JTrunkMemory::Free(JCHAR* ptrAddr)
             pBlkHdr->ubIsUsed = JFALSE;
             pBlkHdr->usAllocSize = 0;
 
+			//free space for function trace stack
             for (idx3=0; idx3<JTMEM_CALL_TRACE_NUM; idx3++)
             {
                 if (pBlkHdr->uiCallTrace[idx3])
@@ -275,6 +289,7 @@ JUINT32 JTrunkMemory::DumpMemory()
         << "JTrunkMemory::DumpMemory nofree memory dump\n"
         << "==========================================\n";
 
+	//dump the memory block info already used
     for (uiIdx=0; uiIdx<m_blkTypeNum; uiIdx++)
     {
         JSingleton<JLog>::instance2() << set(JLOG_MOD_MEMORY, JLOG_DEBUG_LEVEL) 
@@ -332,6 +347,7 @@ JUINT32 JTrunkMemory::DoMemoryCheck()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_MEMORY, "JTrunkMemory::DoMemoryCheck");
 
+	//adjust the front and tail key to check memory overwrite
     for (idx=0; idx<m_blkTypeNum; idx++)
     {
         for (idx2=0; idx2<m_blkNum[idx]; idx2++)
@@ -410,6 +426,7 @@ JUINT32 JHeapMemory::Init()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_MEMORY, "JHeapMemory::Init");
 
+	//through size factor to control the size of heap memory
     m_pHeapMemory = new char[JHMEM_MAX_HEAP_LEN/m_eSizeType];
     if (m_pHeapMemory)
         SafeMemset(m_pHeapMemory, 0, JHMEM_MAX_HEAP_LEN/m_eSizeType);
@@ -430,7 +447,8 @@ JCHAR* JHeapMemory::Alloc(const JUINT32 uiLen)
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_MEMORY, "JHeapMemory::Alloc");
 
-    if (m_AllocInfo.GetItemNum())   //m_AllocInfo list isn't null
+	//m_AllocInfo list isn't null
+    if (m_AllocInfo.GetItemNum())
     {
         JListIterator<JHEAP_ALLOC_INFO> clsListIter1(m_AllocInfo);
         JListIterator<JHEAP_ALLOC_INFO> clsListIter2(m_AllocInfo);
@@ -442,12 +460,14 @@ JCHAR* JHeapMemory::Alloc(const JUINT32 uiLen)
 
             clsListIter2.Next();
 
-            if (clsListIter2.Done())    //pItem1 isn't the last item of list
+			//pItem2 isn't the last item of list
+            if (clsListIter2.Done())
             {
                 pItem2 = clsListIter2.Item();
 
                 ptrInfo1 = pItem1->GetData();
                 ptrInfo2 = pItem2->GetData();
+                //calculate the interval size between adjacent two items
                 if (ptrInfo1 && ptrInfo2)
                 {
                     uiTmpLen = reinterpret_cast<JUINT32>(ptrInfo1->pEnd)+uiLen+uiPadSize;
@@ -467,9 +487,11 @@ JCHAR* JHeapMemory::Alloc(const JUINT32 uiLen)
                     }
                 }
             }
-            else    //pItem1 is the last item of list
+            //pItem2 is the last item of list
+            else
             {
                 ptrInfo1 = pItem1->GetData();
+                //calculate the size from item1 to the end of heap
                 if (ptrInfo1)
                 {
                     uiTmpLen = reinterpret_cast<JUINT32>(ptrInfo1->pEnd)+uiLen+uiPadSize;
@@ -493,7 +515,8 @@ JCHAR* JHeapMemory::Alloc(const JUINT32 uiLen)
             }
         }
     }
-    else    /* m_AllocInfo list is null */
+    //m_AllocInfo list is null
+    else
     {
         ptrAddr = privAlloc(m_pHeapMemory, uiLen, NULL);
         if (!ptrAddr)
@@ -540,6 +563,7 @@ JVOID JHeapMemory::Free(JCHAR* ptrAddr)
         ptrInfo = pItem->GetData();
         if (ptrInfo)
         {
+        	//check the space of alloc heap memory
             ptrHdr = reinterpret_cast<JHEAP_HDR*>(ptrInfo->pStart);
             if((ptrInfo->pStart+uiHeadPadSize) == ptrAddr)
             {
@@ -598,6 +622,7 @@ JCHAR* JHeapMemory::privAlloc(JCHAR* ptrStart, const JUINT32 uiLen, JListItem<JH
 
     SafeMemset(ptrStart, 0, uiLen+uiPadSize);
 
+	//construct alloc info and insert it into the allocinfo list
     ptrInfo = reinterpret_cast<JHEAP_ALLOC_INFO*>(ptrStart);
     ptrInfo->pStart = ptrStart;
     ptrInfo->pEnd = ptrStart+uiLen+uiPadSize;
@@ -605,6 +630,7 @@ JCHAR* JHeapMemory::privAlloc(JCHAR* ptrStart, const JUINT32 uiLen, JListItem<JH
     ptrNewItem = new JListItem<JHEAP_ALLOC_INFO>(ptrInfo);
     m_AllocInfo.InsertItem(ptrNewItem, ptrItem);
 
+	//init the header and tail info for memory alloc
     ptrHdr = reinterpret_cast<JHEAP_HDR*>(ptrStart);
     ptrHdr->usAllocSize = uiLen;
     ptrHdr->ucMemoryType = JMEM_TYPE_HEAP;
@@ -635,6 +661,7 @@ JUINT32 JHeapMemory::DumpMemory()
         << "JHeapMemory::DumpMemory nofree memory dump\n"
         << "==========================================\n";
 
+	//dump the memory info exist in the allocinfo list
     JListIterator<JHEAP_ALLOC_INFO> clsListIter(m_AllocInfo);
     for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
     {
@@ -688,6 +715,7 @@ JUINT32 JHeapMemory::DoMemoryCheck()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_MEMORY, "JHeapMemory::DoMemoryCheck");
 
+	//iterator the adjust key to check memory overwrite
     JListIterator<JHEAP_ALLOC_INFO> clsListIter(m_AllocInfo);
     for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
     {
@@ -747,11 +775,13 @@ JUINT32 JHeapMemory::SetMemorySize(JMEMORY_SIZE eSizeType)
 
 
 //static memory section
+//type for memory alloc mechnism
 JMEMORY_TYPE g_eMemoryType[JMEMORY_NUM] = {
 JMEM_TYPE_TRUNK,
 JMEM_TYPE_HEAP
 };
 
+//timeout function for memory overwrite check
 JUINT32 OnCheckMemory(JVOID* pData)
 {
     JStaticMemory* pStaticMemory = reinterpret_cast<JStaticMemory*>(pData);
@@ -896,6 +926,7 @@ JVOID JStaticMemory::Free(JCHAR* ptrAddr)
         return;
     }
 
+	//calculate the memory type
     uiOffset = sizeof(JUINT32) + sizeof(JMEMORY_TYPE);
     ptrMemType = reinterpret_cast<JMEMORY_TYPE*>(ptrAddr-uiOffset);
     if (ptrMemType)
@@ -923,6 +954,7 @@ JUINT32 JStaticMemory::InitFunc()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_MEMORY, "JStaticMemory::InitFunc");
 
+	//start a timer to check memory overwrite
     m_timeHandler = JSingleton<JTimer>::instance()->CreateTimer(JTIMER_TYPE_PERIODIC, 
                                         OnCheckMemory, 
                                         this, 

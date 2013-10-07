@@ -58,17 +58,17 @@ typedef enum{
 	JEVT_SIPUA_FLUAH_CONTACT_LIST,
 	//pjsip stack callback function
 	JEVT_SIPUA_CALLBACK,
-	//set cfg of the log server
+	//set cfg on the log server
 	JEVT_LOGSRV_SET_CFG,
-	//get cfg of the log server
+	//get cfg on the log server
 	JEVT_LOGSRV_GET_CFG,
-	//get cfg response of the log server
+	//get cfg response on the log server
 	JEVT_LOGSRV_GET_CFG_RSP,
-	//clean log saved in the log server
+	//clean log saved on the log server
 	JEVT_LOGSRV_CLEAN_LOG,
-	//check new msg of the log server
+	//check whether new msg on the log server
 	JEVT_LOGSRV_GET_HAS_NEW_MSG,
-	//check new msg response of the log server
+	//check new msg response on the log server
 	JEVT_LOGSRV_GET_HAS_NEW_MSG_RSP,
 	JEVT_MAX
 }JEVT_TYPE;

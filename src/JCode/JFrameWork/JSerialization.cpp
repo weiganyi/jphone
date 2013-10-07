@@ -512,8 +512,8 @@ JUINT32 JMySql::OpenDataBase(JCHAR* pServer,
         pHandler = mysql_real_connect(&mysql, pServer, pUser, pPassword, pDataBase, uiPort, 0, 0);
         if (!pHandler)
         {
-            /* if want to create a new database, first we need connect to another database, 
-                then create that new database by this connected database */
+            //if want to create a new database, first we need connect to another database, 
+            //then create that new database by this connected database
             mysql_init(&mysql);
             pHandler = mysql_real_connect(&mysql, pServer, pUser, pPassword, JSQL_DEFAULT_DB, uiPort, 0, 0);
             if (!pHandler)
@@ -567,7 +567,8 @@ JUINT32 JMySql::OpenDataBase(JCHAR* pServer,
 
 mxml_type_t vtp_type_cb(vtp_tree_node* p_node)
 {
-    const JCHAR* p_type = NULL;			/* Type string */
+	//Type string
+    const JCHAR* p_type = NULL;
 
     if ((p_type = mxmlElementGetAttr(p_node, "type")) == NULL)
         return (MXML_OPAQUE);
@@ -586,10 +587,14 @@ mxml_type_t vtp_type_cb(vtp_tree_node* p_node)
 
 const JCHAR* vtp_whitespace_cb(vtp_tree_node* p_node, JINT32 where)
 {
-    vtp_tree_node	*parent = NULL;		/* Parent node */
-    JINT32		level = 0;			/* Indentation level */
-    JCHAR* p_name = NULL;			/* Name of element */
-    static JCHAR *tabs = "\t\t\t\t\t\t\t\t";    /* Tabs for indentation */
+	//Parent node
+    vtp_tree_node	*parent = NULL;
+    //Indentation level
+    JINT32		level = 0;
+    //Name of element
+    JCHAR* p_name = NULL;
+    //Tabs for indentation
+    static JCHAR *tabs = "\t\t\t\t\t\t\t\t";
 
     p_name = p_node->value.element.name;
 
@@ -936,7 +941,8 @@ JVOID JMiniXML::DeleteNode(vtp_tree_node* p_node)
 
     p_parent_node = p_node->parent;
     p_prev_node = p_node;
-    while(1)    /* delete the space/LF opaque node before the key element node */
+    //delete the space/LF opaque node before the key element node
+    while(1)
     {
         p_prev_node = mxmlWalkPrev(p_node, p_parent_node, MXML_DESCEND);
         if (p_prev_node && p_prev_node->type != MXML_ELEMENT)

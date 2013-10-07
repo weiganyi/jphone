@@ -72,11 +72,13 @@ JUINT32 JLogSrvCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+	//first store the listen address length into the buffer
 	uiLen = m_ListenAddr.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the listen address into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_ListenAddr.c_str(), uiLen, tmpMaxNum);
@@ -85,11 +87,13 @@ JUINT32 JLogSrvCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+	//first store the listen port length into the buffer
 	uiLen = m_ListenPort.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the listen port into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_ListenPort.c_str(), uiLen, tmpMaxNum);
@@ -116,8 +120,10 @@ JUINT32 JLogSrvCfg::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+	//first get the listen address from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the listen address from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -125,8 +131,10 @@ JUINT32 JLogSrvCfg::DeSerialize(JCHAR* pBuf)
 		pOffset += *pLen;
 	}
 
+	//first get the listen port from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the listen port from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -225,11 +233,13 @@ JUINT32 JLogSrvNumber::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+	//first store the server number into the buffer
 	uiLen = m_srvNumber.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the server number into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_srvNumber.c_str(), uiLen, tmpMaxNum);
@@ -256,8 +266,10 @@ JUINT32 JLogSrvNumber::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+	//first get the server number from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the server number from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -360,11 +372,13 @@ JUINT32 JLogSrvHasNewMsg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+	//first store the flag into the buffer
 	uiLen = m_hasNewMsg.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the flag into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_hasNewMsg.c_str(), uiLen, tmpMaxNum);
@@ -375,11 +389,13 @@ JUINT32 JLogSrvHasNewMsg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 
 	for (uiIdx=0; uiIdx<JLOGSRV_MAX_MSG_SRV; uiIdx++)
 	{
+		//first store the remote address into the buffer
     	uiLen = m_rmtAddr[uiIdx].GetLength();
     	pLen = reinterpret_cast<JUINT32*>(pOffset);
     	*pLen = uiLen;
     	pOffset += sizeof(JUINT32);
     	tmpMaxNum -= sizeof(JUINT32);
+		//then store the remote address into the buffer
     	if (uiLen)
     	{
     		SafeMemcpy(pOffset, m_rmtAddr[uiIdx].c_str(), uiLen, tmpMaxNum);
@@ -408,8 +424,10 @@ JUINT32 JLogSrvHasNewMsg::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+	//first get the flag length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the flag from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -419,8 +437,10 @@ JUINT32 JLogSrvHasNewMsg::DeSerialize(JCHAR* pBuf)
 
 	for (uiIdx=0; uiIdx<JLOGSRV_MAX_MSG_SRV; uiIdx++)
 	{
+		//first get the remote address length from buffer
     	pLen = reinterpret_cast<JUINT32*>(pOffset);
     	pOffset += sizeof(JUINT32);
+		//then get the remote address from buffer
     	if (*pLen)
     	{
     		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -511,6 +531,7 @@ JUINT32 JLogSrv::InitFunc()
         GetCfgList(&m_cfg);
     }
 
+	//communication acceptor on the log server
     m_pCommAcceptor = new JCommAcceptor();
     if (m_pCommAcceptor)
     {
@@ -522,6 +543,7 @@ JUINT32 JLogSrv::InitFunc()
             lclAddr.sin_port = htons(uiListenPort);
             m_pCommAcceptor->SetLocalAddr(&lclAddr);
 
+			//listen new connect from client on the log server
             m_pCommAcceptor->Listen();
         }
     }
@@ -536,7 +558,8 @@ JUINT32 JLogSrv::EventProcFunc(JEvent* pEvent)
     JLogSrvCfg* pLogSrvCfg = JNULL;
     JLogSrvNumber* pLogSrvNumber = JNULL;
 
-    JAutoPtr<JLock> clsLockAutoPtr(&m_commLock);
+	//protect critical for event process
+    JAutoPtr<JLock> clsLockAutoPtr(&m_comLock);
 
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_LOGSRV, "JLogSrv::EventProcFunc");
@@ -627,11 +650,14 @@ JCommEngine* JLogSrv::AcceptLogConnect()
     {
         while(1)
         {
+        	//protect critical for communication operation
             m_msgLock.Acquire();
 
+			//detect connect blocking
             iRet = m_pCommAcceptor->Select(JCOMM_SELECT_INDEFINITE);
             if (iRet == JSUCCESS)
             {
+            	//accept new connect and construct a communication engine
                 pCommEngine = m_pCommAcceptor->Accept();
                 if (pCommEngine)
                 {
@@ -653,6 +679,7 @@ JCommEngine* JLogSrv::AcceptLogConnect()
 	return JNULL;
 }
 
+//get log message from the log server already connected
 JINT32 JLogSrv::RecvLogMsg(JCommEngine* pCommEngine, 
                             JCHAR* pBuf, 
                             JUINT32 uiLen)
@@ -716,6 +743,7 @@ JUINT32 JLogSrv::ProcSetCfgEvent(JLogSrvCfg* pLogSrvCfg)
 
     if (bChanged)
     {
+    	//store the config in local
         SetCfgList(&m_cfg);
     }
 
@@ -748,10 +776,12 @@ JUINT32 JLogSrv::ProcGetCfgEvent(JEvent* pEvent)
 	    pNewEvent->SetToMod(pEvent->GetFromMod().c_str());
 	    pNewEvent->SetBody(pLogSrvCfg);
 
+		//get main thread object from the thread manager
         pThread = JSingleton<JThreadManager>::instance()->GetThread(JS_T_JMAINTHREAD);
         pLogSrvThread = dynamic_cast<JLogSrvThread*>(pThread);
         if (pLogSrvThread)
         {
+        	//get communication engine from the log server
     	    pComEngine = pLogSrvThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -774,18 +804,21 @@ JUINT32 JLogSrv::SetCfgList(JLogSrvCfg* pLogSrvCfg)
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_LOGSRV, "JLogSrv::SetCfgList");
 
+	//create a list struct to store
     if (m_pSerialization)
     {
         uiLen = pLogSrvCfg->GetListenAddr().GetLength();
         if (uiLen)
         {
             pDstData = 
-                reinterpret_cast<JPER_RECORD*>(JSingleton<JStaticMemory>::instance()->Alloc(sizeof(JPER_RECORD)+1));
+                reinterpret_cast<JPER_RECORD*>(JSingleton<JStaticMemory>::instance()
+                ->Alloc(sizeof(JPER_RECORD)+1));
             if (pDstData)
             {
 	            SafeMemset(reinterpret_cast<JCHAR*>(pDstData), 0, sizeof(JPER_RECORD)+1);
                 SafeSprintf(pDstData->strKey, JMAX_STRING_LEN, "%s", JLOGSRV_LISTEN_ADDR);
                 SafeStrcpy(pDstData->strValue, pLogSrvCfg->GetListenAddr().c_str(), uiLen+1);
+                //construct a listitem first
                 pDstItem = new JListItem<JPER_RECORD>(pDstData);
                 pDstItem->SetDataLength(sizeof(JPER_RECORD));
                 clsDstList.InsertItem(pDstItem, prevDstItem);
@@ -793,7 +826,8 @@ JUINT32 JLogSrv::SetCfgList(JLogSrvCfg* pLogSrvCfg)
             }
             else
             {
-                JSingleton<JLog>::instance2() << set(JLOG_MOD_LOGSRV, JLOG_ERROR_LEVEL) << "JLogSrv::SetCfgList memory alloc failure\n";
+                JSingleton<JLog>::instance2() << set(JLOG_MOD_LOGSRV, JLOG_ERROR_LEVEL) 
+					<< "JLogSrv::SetCfgList memory alloc failure\n";
                 return JFAILURE;
             }
         }
@@ -808,6 +842,7 @@ JUINT32 JLogSrv::SetCfgList(JLogSrvCfg* pLogSrvCfg)
 	            SafeMemset(reinterpret_cast<JCHAR*>(pDstData), 0, sizeof(JPER_RECORD)+1);
                 SafeSprintf(pDstData->strKey, JMAX_STRING_LEN, "%s", JLOGSRV_LISTEN_PORT);
                 SafeStrcpy(pDstData->strValue, pLogSrvCfg->GetListenPort().c_str(), uiLen+1);
+                //construct a listitem first
                 pDstItem = new JListItem<JPER_RECORD>(pDstData);
                 pDstItem->SetDataLength(sizeof(JPER_RECORD));
                 clsDstList.InsertItem(pDstItem, prevDstItem);
@@ -839,8 +874,10 @@ JUINT32 JLogSrv::GetCfgList(JLogSrvCfg* pLogSrvCfg)
 
     if (m_pSerialization)
     {
+    	//get a list struct
         clsSrcList = m_pSerialization->GetList(JLOGSRV_CFG_FILE);
 
+		//parse the list struct into listitem, then get data form the listitem
         JListIterator<JPER_RECORD> clsListIter(clsSrcList);
         for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
         {
@@ -885,13 +922,16 @@ JUINT32 JLogSrv::ProcCleanEvent(JLogSrvNumber* pLogSrvNumber)
         return JFAILURE;
     }
 
+	//get the server number need to clean
     uiNumber = atoi(pLogSrvNumber->GetSrvNumber().c_str());
     if (uiNumber>=1 && uiNumber<=JLOGSRV_MAX_MSG_SRV)
     {
+    	//construct the server name
         SafeStrcpy(strThrdName, JS_T_JLOGMSG_PREFIX, JMAX_STRING_LEN);
         SafeStrncat(strThrdName, pLogSrvNumber->GetSrvNumber().c_str(), 
             pLogSrvNumber->GetSrvNumber().GetLength(), JMAX_STRING_LEN);
 
+		//get the log message thread object form the thread manager
         pThread = pThreadManager->GetThread(strThrdName);
         if (pThread)
         {
@@ -906,6 +946,7 @@ JUINT32 JLogSrv::ProcCleanEvent(JLogSrvNumber* pLogSrvNumber)
 	return JSUCCESS;
 }
 
+//get the log server has new message, and the remote address for all log server
 JUINT32 JLogSrv::ProcGetHasNewMsgEvent(JEvent* pEvent, JLogSrvNumber* pLogSrvNumber)
 {
     JUINT32 uiIdx = 0;
@@ -941,6 +982,8 @@ JUINT32 JLogSrv::ProcGetHasNewMsgEvent(JEvent* pEvent, JLogSrvNumber* pLogSrvNum
         SafeMemset(tmpSeq, 0, JMAX_STRING_LEN);
         SafeSprintf(tmpSeq, JMAX_STRING_LEN, "%d", uiIdx+1);
         SafeStrncat(strThrdName, tmpSeq, SafeStrlen(tmpSeq), JMAX_STRING_LEN);
+
+		//get the log message thread object from the thread manager
         pThread = pThreadManager->GetThread(strThrdName);
         if (pThread)
         {
@@ -950,12 +993,14 @@ JUINT32 JLogSrv::ProcGetHasNewMsgEvent(JEvent* pEvent, JLogSrvNumber* pLogSrvNum
                 pRmtAddr[uiIdx] = pLogMsgThread->GetRemoteAddr();
                 if (pRmtAddr[uiIdx])
                 {
+                	//store the remote address for all log server
                     strRmtAddr[uiIdx] = inet_ntoa(pRmtAddr[uiIdx]->sin_addr);
                 }
             }
         }
     }
 
+	//get new message flag for the specified log server
     uiNumber = atoi(pLogSrvNumber->GetSrvNumber().c_str());
     if (uiNumber>=1 && uiNumber<=JLOGSRV_MAX_MSG_SRV)
     {
@@ -963,6 +1008,7 @@ JUINT32 JLogSrv::ProcGetHasNewMsgEvent(JEvent* pEvent, JLogSrvNumber* pLogSrvNum
         SafeStrncat(strThrdName, pLogSrvNumber->GetSrvNumber().c_str(), 
             pLogSrvNumber->GetSrvNumber().GetLength(), JMAX_STRING_LEN);
 
+		//get the log message thread object form the thread manager
         pThread = pThreadManager->GetThread(strThrdName);
         if (pThread)
         {
@@ -970,6 +1016,7 @@ JUINT32 JLogSrv::ProcGetHasNewMsgEvent(JEvent* pEvent, JLogSrvNumber* pLogSrvNum
             if (pLogMsgThread)
             {
                 bHasNewMsg = pLogMsgThread->GetHasNewMsg();
+                //if has new message, clean this flag, it means this flag already get
                 if (bHasNewMsg)
                 {
                     pLogMsgThread->SetHasNewMsg(JFALSE);
@@ -978,10 +1025,13 @@ JUINT32 JLogSrv::ProcGetHasNewMsgEvent(JEvent* pEvent, JLogSrvNumber* pLogSrvNum
                 strHasNewMsg = ucHasNewMsg;
 
                 pNewEvent = new JEvent(JEVT_LOGSRV_GET_HAS_NEW_MSG_RSP);
+                //construct a object put into the event body
                 pLogSrvHasNewMsg = new JLogSrvHasNewMsg;
                 if (pNewEvent && pLogSrvHasNewMsg)
                 {
+                	//set new message flag
                 	pLogSrvHasNewMsg->SetHasNewMsg(strHasNewMsg);
+                	//store remote address for all log server
                     for (uiIdx=0; uiIdx<JLOGSRV_MAX_MSG_SRV; uiIdx++)
                     {
                     	pLogSrvHasNewMsg->SetRmtAddr(strRmtAddr[uiIdx], uiIdx);
@@ -995,6 +1045,7 @@ JUINT32 JLogSrv::ProcGetHasNewMsgEvent(JEvent* pEvent, JLogSrvNumber* pLogSrvNum
             	    pNewEvent->SetToMod(pEvent->GetFromMod().c_str());
             	    pNewEvent->SetBody(pLogSrvHasNewMsg);
 
+					//get the main thread object from thread manager
                     pThread = JSingleton<JThreadManager>::instance()->GetThread(JS_T_JMAINTHREAD);
                     pLogSrvThread = dynamic_cast<JLogSrvThread*>(pThread);
                     if (pLogSrvThread)
@@ -1084,14 +1135,18 @@ JUINT32 JLogSrvThread::Run()
 
     do{
         pCommEngine = m_commEngineGroup.HasMessage(JCOMM_SELECT_INDEFINITE);
-        //for thread notify CommEngine
+        //if CommEngine is the thread notify CommEngine
         if (pCommEngine && pCommEngine == m_pNotifyCommEngine)
         {
+        	//the notify message is "1", because while the event has been sent,
+        	//a notify message "1" also be sent to notify the recv thread that
+        	//this event coming.
             uiRet = pCommEngine->RecvMessage(pBuf, JCOMM_MSG_BUF_LEN, &stAddr);
             if (uiRet == 1 && SafeStrcmp(pBuf, "1") ==0)
             {
                 while(1)
                 {
+                	//protect the queue access
                     m_Lock.Acquire();
 
                     pListItem = m_hQueue.DeQueue();
@@ -1113,14 +1168,6 @@ JUINT32 JLogSrvThread::Run()
                     }
                 }
             }
-            //JEvent recv, and route also must be added here.
-            else
-            {
-            }
-        }
-        //other thread JCommEngine
-        else
-        {
         }
     }while(1);
 
@@ -1218,11 +1265,13 @@ JUINT32 JLogMsgThread::Run()
     }
 
     do{
+    	//construct a new communication engine if new connect come
         m_pCommEngine = pLogSrv->AcceptLogConnect();
         if (m_pCommEngine)
         {
             while(1)
             {
+            	//protect the log server access
                 m_Lock.Acquire();
 
                 iRet = pLogSrv->RecvLogMsg(m_pCommEngine, pBuf, JMAX_BUFFER_LEN);
@@ -1234,6 +1283,8 @@ JUINT32 JLogMsgThread::Run()
                     m_Lock.Release();
                     break;
                 }
+                //if recv log message success,
+                //store it into the log message array base on line ending
                 else if (iRet > 0)
                 {
                     uiLen = SafeStrlen(pBuf);
@@ -1349,6 +1400,7 @@ JSOCKADDR_IN* JLogMsgThread::GetRemoteAddr()
 	return pRmtAddr;
 }
 
+//get all log message into this log server thread
 JUINT32 JLogMsgThread::GetLogMsg(JCHAR* logMessage, 
                                 JUINT32 uiMaxLen, 
                                 JUINT32* pOffset)

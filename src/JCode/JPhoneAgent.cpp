@@ -35,7 +35,7 @@ JPhoneAgent::JPhoneAgent()
     // set log output method
     pLog->SetLogMethod(JLOG_OUTPUT_LOCAL);
 
-    //create JAgentThread and add into JThreadManager
+    //create JAgentThread and register into JThreadManager
     strThrdName = JS_T_JPHONEAGENT;
     strLocalAddr = JPHONE_AGENT_LOCAL_ADDR;
 	m_pAgentThread = new JAgentThread(&strThrdName, &strLocalAddr, JPHONE_AGENT_LOCAL_PORT);
@@ -50,7 +50,7 @@ JPhoneAgent::JPhoneAgent()
 
 JPhoneAgent::~JPhoneAgent()
 {
-    /* destroy all object */
+    //destroy all object
     if (m_pAgentThread)
     {
         delete m_pAgentThread;
@@ -77,6 +77,7 @@ JUINT32 JPhoneAgent::PressKey(JSIPUA_KEY eKey)
     	JCHAR cKey[2] = {0};
 		cKey[0] = JPjSipUa::KeyEnum2Char(eKey);
 		JString strKey = cKey;
+		//store the press key
 		pJPjSipUaKeyBody->SetKey(strKey);
 
 	    pEvent->SetFromProc(JS_P_JMAINPROC);
@@ -91,6 +92,7 @@ JUINT32 JPhoneAgent::PressKey(JSIPUA_KEY eKey)
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -117,6 +119,7 @@ JUINT32 JPhoneAgent::ClickContact(JPjSipUaClickContact* pPjSipUaClickContact)
     pPjSipUaClickContactBody = new JPjSipUaClickContact;
 	if (pEvent && pPjSipUaClickContactBody)
 	{
+		//store the number selected into the contact list
 		pPjSipUaClickContactBody->SetContactNumber(pPjSipUaClickContact->GetContactNumber());
 
 	    pEvent->SetFromProc(JS_P_JMAINPROC);
@@ -131,6 +134,7 @@ JUINT32 JPhoneAgent::ClickContact(JPjSipUaClickContact* pPjSipUaClickContact)
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -157,6 +161,7 @@ JUINT32 JPhoneAgent::SetDaemonCfg(JDaemonCfg* pDaemonCfg)
     pDaemonCfgBody = new JDaemonCfg;
 	if (pEvent && pDaemonCfg)
 	{
+		//set save methon into the body
 		pDaemonCfgBody->SetSaveMethod(pDaemonCfg->GetSaveMethod());
 
 	    pEvent->SetFromProc(JS_P_JMAINPROC);
@@ -171,6 +176,7 @@ JUINT32 JPhoneAgent::SetDaemonCfg(JDaemonCfg* pDaemonCfg)
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -207,6 +213,7 @@ JUINT32 JPhoneAgent::GetDaemonCfg()
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -244,6 +251,9 @@ JUINT32 JPhoneAgent::GetDaemonCfgRsp(JDaemonCfg* pDaemonCfg)
 
     while(1)
     {
+    	//first select time is 500ms, the second is 100ms, because normally the response
+    	//be received in the 500ms after request be sent, so it will make it more likely to 
+    	//receive response at the first select loop.
         if (!uiInterval)
         {
             uiInterval = JPHONE_AGENT_SELECT_TIME;
@@ -253,6 +263,9 @@ JUINT32 JPhoneAgent::GetDaemonCfgRsp(JDaemonCfg* pDaemonCfg)
             uiInterval = JPHONE_AGENT_SELECT_TIME2;
         }
 
+		//if response event be received, first a notify message "1" be received
+		//the get event for the thread queue, because it's through queue read/write
+		//while communication happens between two threads of one process.
         pCommEngine = m_pAgentThread->GetCommEngineGroup().HasMessage(uiInterval);
         if (pCommEngine && pCommEngine == m_pAgentThread->GetNotifyCommEngine())
         {
@@ -268,6 +281,7 @@ JUINT32 JPhoneAgent::GetDaemonCfgRsp(JDaemonCfg* pDaemonCfg)
                         pType = pEvent->GetEventType();
                         pDaemonCfgBody = dynamic_cast<JDaemonCfg*>(pEvent->GetBody());
 
+						//check the response and save the data
                         if (pType == JEVT_DAEMON_GET_CFG_RSP && pDaemonCfgBody)
                         {
                         	pDaemonCfg->SetSaveMethod(pDaemonCfgBody->GetSaveMethod());
@@ -302,6 +316,7 @@ JUINT32 JPhoneAgent::SetSipUaCfg(JPjSipUaCfg* pPjSipUaCfg)
     pPjSipUaCfgBody = new JPjSipUaCfg;
 	if (pEvent && pPjSipUaCfgBody)
 	{
+		//set account info into the body
 		pPjSipUaCfgBody->SetNumber(pPjSipUaCfg->GetNumber());
 		pPjSipUaCfgBody->SetAuthName(pPjSipUaCfg->GetAuthName());
 		pPjSipUaCfgBody->SetAuthPasswd(pPjSipUaCfg->GetAuthPasswd());
@@ -319,6 +334,7 @@ JUINT32 JPhoneAgent::SetSipUaCfg(JPjSipUaCfg* pPjSipUaCfg)
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -355,6 +371,7 @@ JUINT32 JPhoneAgent::GetSipUaCfg()
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -416,6 +433,7 @@ JUINT32 JPhoneAgent::GetSipUaCfgRsp(JPjSipUaCfg* pPjSipUaCfg)
                         pType = pEvent->GetEventType();
                         pPjSipUaCfgBody = dynamic_cast<JPjSipUaCfg*>(pEvent->GetBody());
 
+						//check the response and save the data
                         if (pType == JEVT_SIPUA_GET_CFG_RSP && pPjSipUaCfgBody)
                         {
                         	pPjSipUaCfg->SetNumber(pPjSipUaCfgBody->GetNumber());
@@ -453,6 +471,7 @@ JUINT32 JPhoneAgent::SetLogCfg(JLogCfg* pLogCfg)
     pLogCfgBody = new JLogCfg;
 	if (pEvent && pLogCfgBody)
 	{
+		//set log config into the body
 		pLogCfgBody->SetLogAddress(pLogCfg->GetLogAddress());
 		pLogCfgBody->SetLogPort(pLogCfg->GetLogPort());
 		pLogCfgBody->SetOutputFile(pLogCfg->GetOutputFile());
@@ -470,6 +489,7 @@ JUINT32 JPhoneAgent::SetLogCfg(JLogCfg* pLogCfg)
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -506,6 +526,7 @@ JUINT32 JPhoneAgent::GetLogCfg()
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -567,6 +588,7 @@ JUINT32 JPhoneAgent::GetLogCfgRsp(JLogCfg* pLogCfg)
                         pType = pEvent->GetEventType();
                         pLogCfgBody = dynamic_cast<JLogCfg*>(pEvent->GetBody());
 
+						//check the response and save the data
                         if (pType == JEVT_LOG_GET_CFG_RSP && pLogCfgBody)
                         {
                         	pLogCfg->SetLogAddress(pLogCfgBody->GetLogAddress());
@@ -614,6 +636,7 @@ JUINT32 JPhoneAgent::GetStatus()
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -675,6 +698,7 @@ JUINT32 JPhoneAgent::GetStatusRsp(JPjSipUaCallStatus* pPjSipUaCallStatus)
                         pType = pEvent->GetEventType();
                         pPjSipUaCallStatusBody = dynamic_cast<JPjSipUaCallStatus*>(pEvent->GetBody());
 
+						//check the response and save the data
                         if (pType == JEVT_SIPUA_GET_CALL_STATUS_RSP && pPjSipUaCallStatusBody)
                         {
                         	pPjSipUaCallStatus->SetNumber(pPjSipUaCallStatusBody->GetNumber());
@@ -720,6 +744,7 @@ JUINT32 JPhoneAgent::GetContact()
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -782,6 +807,7 @@ JUINT32 JPhoneAgent::GetContactRsp(JPjSipUaContactList* pPjSipUaContactList)
                         pType = pEvent->GetEventType();
                         pPjSipUaContactListBody = dynamic_cast<JPjSipUaContactList*>(pEvent->GetBody());
 
+						//check the response and save the data
                         if (pType == JEVT_SIPUA_GET_CONTACT_LIST_RSP && pPjSipUaContactListBody)
                         {
         					for (uiIdx=0; uiIdx<JPJSIP_MAX_NUMBER; uiIdx++)
@@ -835,6 +861,7 @@ JUINT32 JPhoneAgent::DumpMemory()
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+        	//get the communication engine to send the event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {

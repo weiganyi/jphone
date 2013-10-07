@@ -147,7 +147,7 @@ private:
     JLogSrvCfg m_cfg;
 
     //lock for event process
-    JLock m_commLock;
+    JLock m_comLock;
     //lock for accept log connect
     JLock m_msgLock;
 

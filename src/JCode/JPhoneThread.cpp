@@ -40,6 +40,7 @@ DWORD JPhoneThreadProc(LPVOID* p)
 	
 	JPjSipUa* pPjSipUa = JSingleton<JPjSipUa>::instance();
 
+	//construct module thread object
     strThrdName = JS_T_JMAINTHREAD;
     strLocalAddr = JTHREAD_LOCAL_ADDR;
 	JModuleThread* pModuleThread = 

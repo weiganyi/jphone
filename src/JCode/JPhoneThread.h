@@ -10,6 +10,7 @@
 #define _JPHONE_THREAD_H_
 
 
+//the process name for jphone
 #define JS_P_JPHONE         "p_jphone"
 
 extern DWORD JPhoneThreadProc(LPVOID* p);

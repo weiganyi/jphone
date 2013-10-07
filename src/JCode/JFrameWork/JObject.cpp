@@ -459,6 +459,7 @@ JUINT32 JObject::GetLocalAddr(JString& rAddr, JString& rIfAddr)
     JUINT32 uiIdx = 0;
     JUINT32 uiMatchIdx = 0;
 
+	//get address list for local mechine
     pHostEnt = gethostbyname(strHostAddr);
     if (pHostEnt)
     {

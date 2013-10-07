@@ -48,7 +48,7 @@
 #define JSIPUA_PROXY_ADDR           "proxyaddr"
 
 #define JSIPUA_LOCAL_ADDR           JPHONE_LOCAL_ADDR
-#define JSIPUA_LOCAL_PORT           10003+JPRUDUCT_PORT_OFFSET
+#define JSIPUA_LOCAL_PORT           10003+JPRODUCT_PORT_OFFSET
 
 #define JS_T_JSIPUA         "t_jsipua"
 

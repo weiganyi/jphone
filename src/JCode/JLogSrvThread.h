@@ -10,6 +10,7 @@
 #define _JLOGSERVER_THREAD_H_
 
 
+//the log server process name
 #define JS_P_JLOGSERVER         "p_jlogsrv"
 
 extern DWORD JLogSrvThreadProc(LPVOID* p);
