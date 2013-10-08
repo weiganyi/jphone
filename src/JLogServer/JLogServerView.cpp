@@ -79,14 +79,17 @@ void CJLogServerView::OnDraw(CDC* pDC)
         return ;
     }
 
+    //get current log server displayed
     EnterCriticalSection(&g_criticalSection);
     uiCurrLogSrv = pMainFrame->GetCurrLogSrv();
     LeaveCriticalSection(&g_criticalSection);
 
+    //get log message
     sprintf(strCurrLogSrv, "%u", uiCurrLogSrv);
     pMainFrame->GetAgent()->GetLogMsg(strCurrLogSrv, reinterpret_cast<JCHAR*>(logMessage), 
         JLOGMSG_MAX_MSG*JMAX_BUFFER_LEN, &uiLogOffset);
 
+    //display the log message
     uiLen = strlen(logMessage[uiLogOffset]);
     if (uiLen)
     {

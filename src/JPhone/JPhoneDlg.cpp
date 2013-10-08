@@ -78,6 +78,7 @@ void CALLBACK lpStatusTimeProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWO
     CJPhoneDlg *pDlg = reinterpret_cast<CJPhoneDlg*>(dwUser);
     char displayBuffer[JDLG_STATUS_BUFFER_LEN] = {0};
 
+    //get call status
     EnterCriticalSection(&g_criticalSection);
     pDlg->m_pAgent->GetStatus();
     pDlg->m_pAgent->GetStatusRsp(&pDlg->m_clsCallStatus);
@@ -94,11 +95,13 @@ void CALLBACK lpStatusTimeProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWO
         }
     }
 
+    //display the call status
     if (strlen(displayBuffer) != 0)
     {
         pDlg->SetDlgItemText(IDC_STATIC_DISPLAY, displayBuffer);
     }
 
+    //start the timer again
     pDlg->m_statusTimer = 
         timeSetEvent(JDLG_STATUS_TIMER_PERIOD, 0, lpStatusTimeProc, dwUser, TIME_ONESHOT);
 
@@ -466,13 +469,13 @@ void CJPhoneDlg::OnPopCfg() //model dialog
     m_pAgent->GetDaemonCfgRsp(&clsDaemonCfg);
     LeaveCriticalSection(&g_criticalSection);
 
-    //sipua config get
+    //get the sipua config
     dlgCfg.m_number = clsSipUaCfg.GetNumber().c_str();
     dlgCfg.m_authname = clsSipUaCfg.GetAuthName().c_str();
     dlgCfg.m_authpasswd = clsSipUaCfg.GetAuthPasswd().c_str();
     dlgCfg.m_proxyaddr = clsSipUaCfg.GetProxyAddr().c_str();
 
-    //log config get
+    //get the log config
     dlgCfg.m_logaddr = clsLogCfg.GetLogAddress().c_str();
     dlgCfg.m_logport = clsLogCfg.GetLogPort().c_str();
 
@@ -497,7 +500,7 @@ void CJPhoneDlg::OnPopCfg() //model dialog
         bLogRemote = 1;
     }
 
-    //daemon config get
+    //get the daemon config
     dlgCfg.m_saveMethod = 0;
     if (clsDaemonCfg.GetSaveMethod() == JDAEMON_SAVE_SQL_ENABLED)
     {
@@ -510,10 +513,10 @@ void CJPhoneDlg::OnPopCfg() //model dialog
         uiSaveMethod = 1;
     }
 
-    //cfg dialog show
+    //show the cfg dialog
 	dlgCfg.DoModal();
 
-    //sipua config set
+    //set the sipua config
     if (clsSipUaCfg.GetNumber() != dlgCfg.m_number.GetBuffer(JMAX_STRING_LEN) ||
         clsSipUaCfg.GetAuthName() != dlgCfg.m_authname.GetBuffer(JMAX_STRING_LEN) ||
         clsSipUaCfg.GetAuthPasswd() != dlgCfg.m_authpasswd.GetBuffer(JMAX_STRING_LEN) ||
@@ -540,7 +543,7 @@ void CJPhoneDlg::OnPopCfg() //model dialog
         LeaveCriticalSection(&g_criticalSection);
     }
 
-    //log config set
+    //set the log config
     if (clsLogCfg.GetLogAddress() != dlgCfg.m_logaddr.GetBuffer(JMAX_STRING_LEN) ||
         clsLogCfg.GetLogPort() != dlgCfg.m_logport.GetBuffer(JMAX_STRING_LEN) ||
         bLogFile != dlgCfg.m_logfile ||
@@ -583,7 +586,7 @@ void CJPhoneDlg::OnPopCfg() //model dialog
         LeaveCriticalSection(&g_criticalSection);
     }
 
-    //daemon config set
+    //set the daemon config
     if (uiSaveMethod != dlgCfg.m_saveMethod)
     {
         if (dlgCfg.m_saveMethod == 0)

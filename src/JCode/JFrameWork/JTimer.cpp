@@ -32,13 +32,15 @@ void CALLBACK lpTimeProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2
         return;
     }
 
+    //get current time
     pTimer->GetSysTime(&sysTime);
 
     pEvent = new JEvent(JEVT_TIMER_EXPIRE);
-    //only for placement new usage exercise, otherwise I new JSysTime object directly here.
+    //only for placement new usage test, otherwise I new JSysTime object directly here.
     pSysTimeBuf = JSingleton<JStaticMemory>::instance()->Alloc(sizeof(JSysTime)+1);
     if (pEvent && pSysTimeBuf)
     {
+        //set current time into the systime body
     	pTimer->SafeMemset(pSysTimeBuf, 0, sizeof(JSysTime)+1);
     	pSysTimeBody = new (pSysTimeBuf) JSysTime;
 
@@ -63,6 +65,7 @@ void CALLBACK lpTimeProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+            //get the communication engine to send event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -157,6 +160,7 @@ JUINT32 JSysTime::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+    //store the year
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -167,6 +171,7 @@ JUINT32 JSysTime::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the month
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -177,6 +182,7 @@ JUINT32 JSysTime::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the day of week
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -187,6 +193,7 @@ JUINT32 JSysTime::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the day
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -197,6 +204,7 @@ JUINT32 JSysTime::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the hour
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -207,6 +215,7 @@ JUINT32 JSysTime::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the minute
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -217,6 +226,7 @@ JUINT32 JSysTime::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the second
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -227,6 +237,7 @@ JUINT32 JSysTime::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the millisecond
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -255,34 +266,42 @@ JUINT32 JSysTime::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+    //store the year
 	pVal = reinterpret_cast<JUINT32*>(pOffset);
 	uiYear = *pVal;
 	pOffset += sizeof(JUINT32);
 
+    //store the month
 	pVal = reinterpret_cast<JUINT32*>(pOffset);
 	uiMonth = *pVal;
 	pOffset += sizeof(JUINT32);
 
+    //store the day of week
 	pVal = reinterpret_cast<JUINT32*>(pOffset);
 	uiDayOfWeek = *pVal;
 	pOffset += sizeof(JUINT32);
 
+    //store the day
 	pVal = reinterpret_cast<JUINT32*>(pOffset);
 	uiDay = *pVal;
 	pOffset += sizeof(JUINT32);
 
+    //store the hour
 	pVal = reinterpret_cast<JUINT32*>(pOffset);
 	uiHour = *pVal;
 	pOffset += sizeof(JUINT32);
 
+    //store the minute
 	pVal = reinterpret_cast<JUINT32*>(pOffset);
 	uiMinute = *pVal;
 	pOffset += sizeof(JUINT32);
 
+    //store the second
 	pVal = reinterpret_cast<JUINT32*>(pOffset);
 	uiSecond = *pVal;
 	pOffset += sizeof(JUINT32);
 
+    //store the millisecond
 	pVal = reinterpret_cast<JUINT32*>(pOffset);
 	uiMilliseconds = *pVal;
 	pOffset += sizeof(JUINT32);
@@ -408,7 +427,7 @@ JTimer::JTimer()
     JString strThrdName;
     JString strLocalAddr;
 
-    //create JAgentThread and add into JThreadManager
+    //create JAgentThread and register into JThreadManager
     strThrdName = JS_T_JTIMER;
     strLocalAddr = JTIMER_LOCAL_ADDR;
 	m_pAgentThread = new JAgentThread(&strThrdName, &strLocalAddr, JTIMER_LOCAL_PORT);
@@ -437,6 +456,7 @@ JTimer::JTimer()
 
 JTimer::~JTimer()
 {
+    //destory the timer resource
     timeKillEvent(m_handler);
 
     timeEndPeriod(JTIMER_MIN_PERIOD);
@@ -485,8 +505,10 @@ JUINT32 JTimer::StartTimer(const JUINT32 uiHandler)
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_TIMER, "JTimer::StartTimer");
 
+    //calculate the expire time
     GetSysTime(&sysTime);
     AddSysTime(&sysTime, m_timerCB[uiHandler].uiTime);
+
     SafeMemcpy(reinterpret_cast<JCHAR*>(&m_timerCB[uiHandler].expire), 
         reinterpret_cast<JCHAR*>(&sysTime), 
         sizeof(JSYSTIME), sizeof(JSYSTIME));
@@ -556,15 +578,18 @@ JUINT32 JTimer::EventProcFunc(JEvent* pEvent)
 
                 for (uiIdx=0; uiIdx<JTIMER_MAX_CB_NUM; uiIdx++)
                 {
+                    //check whether the timer is already timeout
                     if (m_timerCB[uiIdx].isUsed && 
                         CmpSysTime(&m_timerCB[uiIdx].expire, &sysTime) == SYSTIME_SMALLER && 
                         CheckSysTime(&m_timerCB[uiIdx].expire, &sysTime) == SYSTIME_SMALLER)
                     {
+                        //reset the expire time
                         if (m_timerCB[uiIdx].eType == JTIMER_TYPE_PERIODIC)
                         {
                             AddSysTime(&m_timerCB[uiIdx].expire, m_timerCB[uiIdx].uiTime);
                         }
 
+                        //call the callback function
                         m_timerCB[uiIdx].pfFunc(m_timerCB[uiIdx].pData);
                     }
                 }

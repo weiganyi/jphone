@@ -46,6 +46,7 @@ JSOCKET JUdpSocket::Create(JSOCKET fd)
 
     if (!m_fd)
     {
+        //create a socket
         m_fd = socket(AF_INET, SOCK_DGRAM, 0);
         if (m_fd == INVALID_SOCKET)
         {
@@ -73,6 +74,7 @@ JVOID JUdpSocket::Destroy()
 {
     if (m_fd != JNULL)
     {
+        //shutdown the socket
         shutdown(m_fd, 0);
     }
 
@@ -89,6 +91,7 @@ JINT32 JUdpSocket::SetLocalAddr(JSOCKADDR_IN* pAddr)
         return JFAILURE;
     }
 
+    //bind the socket to a local address
     iRet = bind(m_fd, (JSOCKADDR *)pAddr, sizeof(JSOCKADDR_IN));
 
     return iRet;
@@ -138,6 +141,7 @@ JINT32 JUdpSocket::Select(const JUINT32 uiMilisecond)
         pTimeVal = JNULL;
     }
 
+    //select the message incoming
     iRet = select(max_fd+1, &readfds, NULL, NULL, pTimeVal); 
     if (FD_ISSET(max_fd, &readfds))
     {
@@ -157,6 +161,7 @@ JINT32 JUdpSocket::SendBuf(const JCHAR* ptrBuf, const JUINT32 uiLen)
         return JNULL;
     }
 
+    //send the message to the remote
     iSendLen = sendto(m_fd, ptrBuf, uiLen, 0, reinterpret_cast<JSOCKADDR*>(&m_rmtAddr), sizeof(JSOCKADDR_IN));
     if (SOCKET_ERROR == iSendLen)
     {
@@ -179,6 +184,7 @@ JINT32 JUdpSocket::RecvBuf(JCHAR* ptrBuf, const JUINT32 uiLen, JSOCKADDR_IN* pFr
         return JNULL;
     }
 
+    //recv the message from the remote
     iRecvLen = recvfrom(m_fd, ptrBuf, uiLen, 0, reinterpret_cast<JSOCKADDR*>(pFrom), iFromLen);
     if (SOCKET_ERROR == iRecvLen)
     {
@@ -215,6 +221,7 @@ JVOID JTcpSocket::Destroy()
 {
     if (m_fd != JNULL)
     {
+        //shutdown the socket
         shutdown(m_fd, 0);
     }
 
@@ -263,6 +270,7 @@ JINT32 JTcpSocket::Select(const JUINT32 uiMilisecond)
         pTimeVal = JNULL;
     }
 
+    //select the socket
     iRet = select(max_fd+1, &readfds, JNULL, JNULL, pTimeVal); 
     if (FD_ISSET(max_fd, &readfds))
     {
@@ -282,6 +290,7 @@ JINT32 JTcpSocket::SendBuf(const JCHAR* ptrBuf, const JUINT32 uiLen)
         return JNULL;
     }
 
+    //send the message to the remote
     iSendLen = send(m_fd, ptrBuf, uiLen, 0);
     if (SOCKET_ERROR == iSendLen)
     {
@@ -304,6 +313,7 @@ JINT32 JTcpSocket::RecvBuf(JCHAR* ptrBuf, const JUINT32 uiLen, JSOCKADDR_IN* pFr
         return JNULL;
     }
 
+    //recv the message from the remote
     iRecvLen = recv(m_fd, ptrBuf, uiLen, 0);
     if (SOCKET_ERROR == iRecvLen)
     {
@@ -328,6 +338,7 @@ JCommEngine::JCommEngine(JSOCKET_TYPE eType, JSOCKET ofd):m_eType(eType)
 
     m_pSocket = JNULL;
 
+    //we can use virtual function to create socket in here
     if (m_eType == JSOCKET_UDP)
     {
         m_pSocket = new JUdpSocket();
@@ -385,6 +396,7 @@ JUINT32 JCommEngine::SetLocalAddr(JCHAR* pProcName,
         return JFAILURE;
     }
 
+    //save local route info
     JSingleton<JRoute>::instance()->AddRoute(pProcName, pThrdName, pAddr);
 
     SetLocalAddr(pAddr);
@@ -419,6 +431,7 @@ JUINT32 JCommEngine::SetRemoteAddr(JCHAR* pProcName,
         return JFAILURE;
     }
 
+    //save remote route info
     JSingleton<JRoute>::instance()->AddRoute(pProcName, pThrdName, pAddr);
 
     SetRemoteAddr(pAddr);
@@ -470,11 +483,13 @@ JUINT32 JCommEngine::SendEvent(JEvent* pEvent)
     pToThrdName = pEvent->GetToThrd().c_str();
     pToModName = pEvent->GetToMod().c_str();
 
+    //find the route table
     uiExist = JSingleton<JRoute>::instance()->FindRoute(pToProcName, pToThrdName);
     if (uiExist)
     {
         eType = 
             JSingleton<JRoute>::instance()->GetRouteType(pFromProcName, pFromThrdName, pToProcName, pToThrdName);
+        //if route type is module or thread, enqueue the event directly
         if (eType == ROUTE_TYPE_MODULE || eType == ROUTE_TYPE_THREAD)
         {
             pItem = new JListItem<JEvent>(pEvent);
@@ -487,12 +502,14 @@ JUINT32 JCommEngine::SendEvent(JEvent* pEvent)
                     JSingleton<JRoute>::instance()->GetRoute(pToProcName, pToThrdName, &rmtAddr);
                 if (uiRet)
                 {
+                    //send a message "1" to notify the dest module
                     uiRet = SendMessage("1", 1, &rmtAddr);
                 }
             }
 
             return uiRet;
         }
+        //if route type is process, send the message through the socket
         else if (eType == ROUTE_TYPE_PROCESS)
         {
             pBuf = pEvent->Serialize(&uiBufLen);
@@ -570,6 +587,7 @@ JUINT32 JCommEngine::RecvEvent(JCHAR* pBuf, JUINT32 uiLen, JEvent** ppEvent, JSO
         return JFAILURE;
     }
 
+    //create a new event and deserialize it from buffer
     pNewEvent = new JEvent(JEVT_NONE);
     if (pNewEvent)
     {
@@ -634,6 +652,7 @@ JSOCKET JCommConnector::Create()
     JINT32 iRet = JFALSE;
     JCHAR bReUse = 1;
 
+    //create a socket
     m_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (m_fd == INVALID_SOCKET)
     {
@@ -645,6 +664,7 @@ JSOCKET JCommConnector::Create()
     }
     else
     {
+        //set reuse option for this socket
         iRet = setsockopt(m_fd, SOL_SOCKET, SO_REUSEADDR, &bReUse, sizeof(bReUse));
         return m_fd;
     }
@@ -656,6 +676,7 @@ JVOID JCommConnector::Destroy()
 {
     if (m_fd != JNULL)
     {
+        //shutdown the socket
         shutdown(m_fd, 0);
     }
 
@@ -674,6 +695,7 @@ JINT32 JCommConnector::SetLocalAddr(JSOCKADDR_IN* pAddr)
 
     SafeMemcpy(reinterpret_cast<JCHAR*>(&m_lclAddr), reinterpret_cast<const JCHAR*>(pAddr), sizeof(JSOCKADDR_IN), sizeof(JSOCKADDR_IN));
 
+    //bind the socket to a local address
     iRet = bind(m_fd, (JSOCKADDR *)pAddr, sizeof(JSOCKADDR_IN));
 
     return iRet;
@@ -697,9 +719,12 @@ JCommEngine* JCommConnector::Connect()
     JINT32 iRet = 0;
     JCommEngine* pCommEngine = JNULL;
 
+    //connect to the remote socket
     iRet = connect(m_fd, reinterpret_cast<JSOCKADDR*>(&m_rmtAddr), sizeof(JSOCKADDR_IN));
     if (iRet != SOCKET_ERROR)
     {
+        //if success, construct a comm engine for this connect, 
+        //can use it to transmit the data
         pCommEngine = new JCommEngine(JSOCKET_TCP, m_fd);
         if (pCommEngine)
         {
@@ -736,6 +761,7 @@ JSOCKET JCommAcceptor::Create()
 {
     JINT32 iRet = JFALSE;
 
+    //create a socket
     m_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (m_fd == INVALID_SOCKET)
     {
@@ -757,6 +783,7 @@ JVOID JCommAcceptor::Destroy()
 {
     if (m_fd != JNULL)
     {
+        //shutdown the socket
         shutdown(m_fd, 0);
     }
 
@@ -775,6 +802,7 @@ JINT32 JCommAcceptor::SetLocalAddr(JSOCKADDR_IN* pAddr)
 
     SafeMemcpy(reinterpret_cast<JCHAR*>(&m_lclAddr), reinterpret_cast<const JCHAR*>(pAddr), sizeof(JSOCKADDR_IN), sizeof(JSOCKADDR_IN));
 
+    //bind the socket to a local address
     iRet = bind(m_fd, (JSOCKADDR *)pAddr, sizeof(JSOCKADDR_IN));
 
     return iRet;
@@ -803,6 +831,7 @@ JINT32 JCommAcceptor::Select(const JUINT32 uiMilisecond)
         pTimeVal = JNULL;
     }
 
+    //select the socket for incoming connect
     iRet = select(max_fd+1, &readfds, JNULL, JNULL, pTimeVal); 
     if (FD_ISSET(max_fd, &readfds))
     {
@@ -815,7 +844,8 @@ JINT32 JCommAcceptor::Select(const JUINT32 uiMilisecond)
 JINT32 JCommAcceptor::Listen()
 {
     JINT32 iRet = 0;
-	
+
+	//listen the connect
     iRet = listen(m_fd, 10);
 
     return iRet;
@@ -827,9 +857,12 @@ JCommEngine* JCommAcceptor::Accept()
     JCommEngine* pCommEngine = JNULL;
     JINT32 iAddrLen = sizeof(JSOCKADDR_IN);
 
+    //accept the incoming connect
     fd = accept(m_fd, reinterpret_cast<JSOCKADDR*>(&m_rmtAddr), &iAddrLen);
     if (fd)
     {
+        //if success, construct a comm engine for this accepted connect
+        //can use it to transmit data
         pCommEngine = new JCommEngine(JSOCKET_TCP, fd);
         if (pCommEngine)
         {
@@ -898,6 +931,7 @@ JCommEngine* JCommEngineGroup::HasMessage(JUINT32 uiMilisecond)
         pTimeVal = JNULL;
     }
 
+    //set fd for all comm engine
     FD_ZERO(&readfds);
     for (uiIdx=0; uiIdx<m_uiUsedCommEngine; uiIdx++)
     {
@@ -909,6 +943,7 @@ JCommEngine* JCommEngineGroup::HasMessage(JUINT32 uiMilisecond)
         }
     }
 
+    //select the sockets and return the comm engin that has message incoming
     iRet = select(max_fd+1, &readfds, NULL, NULL, pTimeVal); 
     for (uiIdx=0; uiIdx<m_uiUsedCommEngine; uiIdx++)
     {

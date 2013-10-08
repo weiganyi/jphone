@@ -12,7 +12,7 @@
 
 namespace JFrameWork{
 
-//JDaemonCfg definication
+//JDaemonCfg definition
 //the cfg file name
 #define JDAEMON_DEFAULT_FILE        "jdaemon_cfg"
 
@@ -55,7 +55,7 @@ private:
 };
 
 
-//JDaemon definication
+//JDaemon definition
 //this class run in background and provide some global function for app
 class JDaemon: public JModule{
 public:

@@ -48,6 +48,7 @@ JUINT32 JIni::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
         return JFAILURE;
     }
 
+    //construct pathname for ini file
     SafeSprintf(strFileName, JMAX_STRING_LEN, "%s.ini", pName);
     hFileHandler = SafeFopen(strFileName, "w+");
     if (!hFileHandler)
@@ -64,6 +65,7 @@ JUINT32 JIni::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
         return JSUCCESS;
     }
 
+    //iterator the record list, get the data and put it into the ini file
     JListIterator<JPER_RECORD> clsListIter(clsList);
     for (clsListIter.Last(); clsListIter.Done(); clsListIter.Prev())
     {
@@ -110,6 +112,7 @@ JList<JPER_RECORD> JIni::GetList(JCHAR* pName)
         return clsList;
     }
 
+    //construct pathname for ini file
     SafeSprintf(strFileName, JMAX_STRING_LEN, "%s.ini", pName);
     hFileHandler = SafeFopen(strFileName, "r");
     if (!hFileHandler)
@@ -121,6 +124,7 @@ JList<JPER_RECORD> JIni::GetList(JCHAR* pName)
         return clsList;
     }
 
+    //get one line every time
     while(SafeFgets(strLine, JMAX_STRING_LEN, hFileHandler) != JNULL)
     {
         if ((pOffset = SafeStrchr(strLine, cEqualChar)) != 0)
@@ -143,6 +147,7 @@ JList<JPER_RECORD> JIni::GetList(JCHAR* pName)
             {
                 prevItem = pItem;
 
+                //alloc memory from static memory
                 uiLen = sizeof(JPER_RECORD);
                 pData = 
                     reinterpret_cast<JPER_RECORD*>(JSingleton<JStaticMemory>::instance()->Alloc(uiLen+1));
@@ -159,6 +164,7 @@ JList<JPER_RECORD> JIni::GetList(JCHAR* pName)
 	                    SafeStrcpy(pData->strValue, strValue, JMAX_STRING_LEN);
 	                }
 
+                    //construct listitem and insert into the record list
 	                pItem = new JListItem<JPER_RECORD>(pData);
 	                pItem->SetDataLength(uiLen);
 	                clsList.InsertItem(pItem, prevItem);
@@ -210,6 +216,7 @@ JMySql::JMySql(JCHAR* pServer,
         m_strDataBase = pDataBase;
     }
 
+    //open the database first
     uiRet = OpenDataBase(m_strServer.c_str(), m_strUser.c_str(), m_strPassword.c_str(), 
         m_uiPort, m_strDataBase.c_str());
     if (uiRet != JSUCCESS)
@@ -256,9 +263,13 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
 
     try
     {
+        //construct the database table name
         SafeSprintf(strTableName, JMAX_STRING_LEN, "t_%s", pName);
 
+        //init the mysql
         mysql_init(&mysql);
+
+        //connect the mysql
         pHandler = mysql_real_connect(&mysql, m_strServer.c_str(), m_strUser.c_str(), 
             m_strPassword.c_str(), m_strDataBase.c_str(), m_uiPort, 0, 0);
         if (!pHandler)
@@ -268,6 +279,7 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
             throw JException(errInfo);
         }
 
+        //select the table
         SafeSprintf(sqlBuf, JMAX_BUFFER_LEN, "use %s", m_strDataBase.c_str());
         state = mysql_query(pHandler, sqlBuf);
         if (state != 0)
@@ -277,8 +289,10 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
             throw JException(errInfo);
         }
 
+        //select data from the table
         SafeSprintf(sqlBuf, JMAX_BUFFER_LEN, "select * from %s", strTableName);
         state = mysql_query(pHandler, sqlBuf);
+        //if the table isn't exist, create it
         if (state != 0)
         {
             SafeSprintf(sqlBuf, JMAX_BUFFER_LEN, 
@@ -292,6 +306,7 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
                 throw JException(errInfo);
             }
         }
+        //otherwise get the result of select
         else
         {
             result = mysql_store_result(pHandler);
@@ -302,6 +317,7 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
             }
         }
 
+        //clean the old data in the table
         SafeSprintf(sqlBuf, JMAX_BUFFER_LEN, "delete from %s", strTableName);
         state = mysql_query(pHandler, sqlBuf);
         if (state != 0)
@@ -311,6 +327,7 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
             throw JException(errInfo);
         }
 
+        //iterator the record list, get the data and put it into the table
         JListIterator<JPER_RECORD> clsListIter(clsList);
         for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
         {
@@ -319,6 +336,7 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
             pData = pItem->GetData();
             if (pData)
             {
+                //insert the record into the table
                 SafeSprintf(sqlBuf, JMAX_BUFFER_LEN, 
                     "insert into %s values(\"%s\", \"%s\")", strTableName, pData->strKey, pData->strValue);
                 state = mysql_query(pHandler, sqlBuf);
@@ -348,6 +366,7 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
                 << "JMySql::SetList return failue\n";
         }
 
+        //free the result and close the databse
         if (result)
         {
             mysql_free_result(result);
@@ -357,6 +376,7 @@ JUINT32 JMySql::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
         return JFAILURE;
     }
 
+    //free the result and close the databse
     if (result)
     {
         mysql_free_result(result);
@@ -394,9 +414,13 @@ JList<JPER_RECORD> JMySql::GetList(JCHAR* pName)
 
     try
     {
+        //construct the table name
         SafeSprintf(strTableName, JMAX_STRING_LEN, "t_%s", pName);
 
+        //init the mysql
         mysql_init(&mysql);
+
+        //connect the mysql
         pHandler = mysql_real_connect(&mysql, m_strServer.c_str(), m_strUser.c_str(), 
             m_strPassword.c_str(), m_strDataBase.c_str(), m_uiPort, 0, 0);
         if (!pHandler)
@@ -406,6 +430,7 @@ JList<JPER_RECORD> JMySql::GetList(JCHAR* pName)
             throw JException(errInfo);
         }
 
+        //select the table
         SafeSprintf(sqlBuf, JMAX_BUFFER_LEN, "use %s", m_strDataBase.c_str());
         state = mysql_query(pHandler, sqlBuf);
         if (state != 0)
@@ -415,6 +440,7 @@ JList<JPER_RECORD> JMySql::GetList(JCHAR* pName)
             throw JException(errInfo);
         }
 
+        //select data from the table
         SafeSprintf(sqlBuf, JMAX_BUFFER_LEN, "select * from %s", strTableName);
         state = mysql_query(pHandler, sqlBuf);
         if (state != 0)
@@ -423,11 +449,14 @@ JList<JPER_RECORD> JMySql::GetList(JCHAR* pName)
                 "mysql_query return err:%s, sqlBuf:%s", mysql_error(pHandler), sqlBuf);
             throw JException(errInfo);
         }
+        //get the result of select
         result = mysql_store_result(pHandler);
+        //fetch the result row
         while ((row = mysql_fetch_row(result)) != JNULL)
         {
             prevItem = pItem;
 
+            //alloc the memory from static memory
             uiLen = sizeof(JPER_RECORD);
             pData = 
                 reinterpret_cast<JPER_RECORD*>(JSingleton<JStaticMemory>::instance()->Alloc(uiLen+1));
@@ -443,6 +472,8 @@ JList<JPER_RECORD> JMySql::GetList(JCHAR* pName)
 	            {
 	                SafeStrcpy(pData->strValue, row[1], JMAX_STRING_LEN);
 	            }
+
+                //construct listitem and insert it into the record list
 	            pItem = new JListItem<JPER_RECORD>(pData);
 	            pItem->SetDataLength(uiLen);
 	            clsList.InsertItem(pItem, prevItem);
@@ -466,6 +497,7 @@ JList<JPER_RECORD> JMySql::GetList(JCHAR* pName)
                 << "JMySql::GetList return failue\n";
         }
 
+        //free the result and close the databse
         if (result)
         {
             mysql_free_result(result);
@@ -475,6 +507,7 @@ JList<JPER_RECORD> JMySql::GetList(JCHAR* pName)
         return clsList;
     }
 
+    //free the result and close the databse
     if (result)
     {
         mysql_free_result(result);
@@ -508,7 +541,10 @@ JUINT32 JMySql::OpenDataBase(JCHAR* pServer,
 
     try
     {
+        //init the mysql
         mysql_init(&mysql);
+
+        //connect the mysql
         pHandler = mysql_real_connect(&mysql, pServer, pUser, pPassword, pDataBase, uiPort, 0, 0);
         if (!pHandler)
         {
@@ -524,6 +560,7 @@ JUINT32 JMySql::OpenDataBase(JCHAR* pServer,
             }
             else
             {
+                //create the database
                 SafeSprintf(sqlBuf, JMAX_BUFFER_LEN, "create database %s", pDataBase);
                 state = mysql_query(pHandler, sqlBuf);
                 if (state != 0)
@@ -553,18 +590,21 @@ JUINT32 JMySql::OpenDataBase(JCHAR* pServer,
                 << "JMySql::OpenDataBase return failue\n";
         }
 
+        //close the databse
         if (pHandler)
             mysql_close(pHandler);
 
         return JFAILURE;
     }
 
+    //close the databse
     if (pHandler)
         mysql_close(pHandler);
 
     return JSUCCESS;
 }
 
+//callback function for minixml library to get node type
 mxml_type_t vtp_type_cb(vtp_tree_node* p_node)
 {
 	//Type string
@@ -585,6 +625,7 @@ mxml_type_t vtp_type_cb(vtp_tree_node* p_node)
     	return (MXML_OPAQUE);
 }
 
+//callback function for minixml library to get space token
 const JCHAR* vtp_whitespace_cb(vtp_tree_node* p_node, JINT32 where)
 {
 	//Parent node
@@ -682,8 +723,10 @@ JUINT32 JMiniXML::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
         return JSUCCESS;
     }
 
+    //construct a root mode
     pTreeNode = LoadString(JXML_FILE_TEMPLATE);
 
+    //iterator the record list and insert record into the node tree
     JListIterator<JPER_RECORD> clsListIter(clsList);
     for (clsListIter.Last(); clsListIter.Done(); clsListIter.Prev())
     {
@@ -698,8 +741,12 @@ JUINT32 JMiniXML::SetList(JList<JPER_RECORD> &clsList, JCHAR* pName)
 
     if (clsList.GetItemNum())
     {
+        //construct the xml file name
         SafeSprintf(strFileName, JMAX_STRING_LEN, "%s.xml", pName);
+
+        //save the node tree into the xml file
         SaveFile(pTreeNode, strFileName);
+
         DeleteNode(pTreeNode);
     }
 
@@ -730,13 +777,18 @@ JList<JPER_RECORD> JMiniXML::GetList(JCHAR* pName)
         return clsList;
     }
 
+    //construct the xml file name
     SafeSprintf(strFileName, JMAX_STRING_LEN, "%s.xml", pName);
+
+    //read node tree from xml file
     pTreeNode = LoadFile(strFileName);
     if (pTreeNode)
     {
+        //find root node
         pRootNode = FindNode(pTreeNode, pTreeNode, JXML_ROOT_NODE, strValue, JMAX_STRING_LEN);
         if (pRootNode)
         {
+            //iterator all child node
             while(HasChildNode(pRootNode))
             {
                 pSubNode = NextNode(pRootNode, pRootNode, strKey, JMAX_STRING_LEN, 
@@ -760,6 +812,8 @@ JList<JPER_RECORD> JMiniXML::GetList(JCHAR* pName)
 	                    {
 	                        SafeStrcpy(pData->strValue, strValue, JMAX_STRING_LEN);
 	                    }
+
+                        //construct record listitem and insert it into the list
 	                    pItem = new JListItem<JPER_RECORD>(pData);
 	                    pItem->SetDataLength(uiLen);
 	                    clsList.InsertItem(pItem, prevItem);
@@ -873,6 +927,8 @@ vtp_tree_node* JMiniXML::AddNode(vtp_tree_node*  p_node,
         return NULL;
     }
 
+    //if the node already has child node, it should be the format node "CRLF"
+    //so we need duplicate this format node, and insert it after key element node inserting
     if (p_node->child && 
         p_node->child->type == MXML_OPAQUE &&
         p_node->child->value.opaque[0] != NULL)
@@ -970,6 +1026,7 @@ JBOOL JMiniXML::HasChildNode(vtp_tree_node*  p_node)
         return JFALSE;
     }
 
+    //first check direct child node whether is element node
     p_child_node = p_node->child;
     if (p_child_node)
     {
@@ -983,6 +1040,7 @@ JBOOL JMiniXML::HasChildNode(vtp_tree_node*  p_node)
         return JFALSE;
     }
 
+    //then check brother child node whether is element node
     p_next_node = p_child_node->next;
     while(p_next_node)
     {
@@ -1019,6 +1077,7 @@ vtp_tree_node* JMiniXML::FindNode(vtp_tree_node*     p_node,
     if (p_value && value_len)
         memset(p_value, 0, value_len);
 
+    //first find the key element node
     if (p_node->type == MXML_ELEMENT && 
         p_node->value.element.name &&
         strcmp(p_node->value.element.name, p_key) == 0)
@@ -1034,6 +1093,7 @@ vtp_tree_node* JMiniXML::FindNode(vtp_tree_node*     p_node,
         }
     }
 
+    //then find the value node
     p_value_node = p_key_node->child;
     if (p_value_node && 
         p_value_node->type == MXML_OPAQUE && 
@@ -1085,6 +1145,7 @@ vtp_tree_node* JMiniXML::NextNode(vtp_tree_node*    p_node,
     else
         p_key_node = p_node;
 
+    //find brother element node
     while(p_key_node)
     {
         p_key_node = mxmlWalkNext(p_key_node, p_top, MXML_DESCEND);
@@ -1103,9 +1164,13 @@ vtp_tree_node* JMiniXML::NextNode(vtp_tree_node*    p_node,
                 return NULL;
             }
             else
+            {
+                //save and return the key
                 strcpy(p_key, p_key_node->value.element.name);
+            }
         }
 
+        //find value node for this key element node
         p_value_node = p_key_node->child;
         if (p_value_node && 
             p_value_node->type == MXML_OPAQUE && 
@@ -1120,7 +1185,10 @@ vtp_tree_node* JMiniXML::NextNode(vtp_tree_node*    p_node,
                     return NULL;
                 }
                 else
+                {
+                    //save and return the value
                     strcpy(p_value, p_value_node->value.opaque);
+                }
             }
         }
 
@@ -1152,6 +1220,7 @@ JSerialization::JSerialization(JSER_PERSISTENCE_TYPE ePersistenceType,
         m_pPersistence = new JMiniXML();
     }
     #if 0
+    //auto probe the persistence type, first mysql then xml
     else if (ePersistenceType == JSER_PERSISTENCE_QUERY)
     {
         try

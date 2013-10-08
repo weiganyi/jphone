@@ -15,11 +15,12 @@
 
 namespace JFrameWork{
 
-//JPersistence definication
+//JPersistence definition
 typedef struct{
+    //key for one persistence record
     JCHAR  strKey[JMAX_STRING_LEN];
+    //value for one persistence record
     JCHAR  strValue[JMAX_STRING_LEN];
-    JUINT8 bSysMemory;
 }JPER_RECORD;
 
 class JPersistence: public JObject{
@@ -34,7 +35,7 @@ private:
 };
 
 
-//JIni definication
+//JIni definition
 class JIni: public JPersistence{
 public:
     JIni();
@@ -47,7 +48,8 @@ private:
 };
 
 
-//JMySql definication
+//JMySql definition
+//default sql database name
 #define JSQL_DEFAULT_DB     "mysql"
 
 class JMySql: public JPersistence{
@@ -63,11 +65,16 @@ public:
     JList<JPER_RECORD> GetList(JCHAR* pName);
 
 private:
+    //sql database server
     JString m_strServer;
+    //sql database user
     JString m_strUser;
+    //sql database password
     JString m_strPassword;
-    JString m_strDataBase;
+    //sql database port
     JUINT32 m_uiPort;
+    //sql database name
+    JString m_strDataBase;
 
     JUINT32 JMySql::OpenDataBase(JCHAR* pServer, 
                                 JCHAR* pUser, 
@@ -77,12 +84,16 @@ private:
 };
 
 
-//JMiniXML definication
+//JMiniXML definition
+//xml node type
 typedef mxml_node_t vtp_tree_node;
 
+//root node template
 #define JXML_FILE_TEMPLATE  "<ROOT></ROOT>"
+//root node name
 #define JXML_ROOT_NODE      "ROOT"
 
+//lineend token
 #define JXML_LINE_FEED      0x0D
 
 class JMiniXML: public JPersistence{
@@ -119,18 +130,26 @@ private:
 };
 
 
-//JSerialization definication
+//JSerialization definition
 typedef enum{
     JSER_PERSISTENCE_NONE     = 0x0,
+    //persistence through ini file
     JSER_PERSISTENCE_INI      = 0x1,
+    //persistence through sql databse
     JSER_PERSISTENCE_SQL      = 0x1<<1,
+    //persistence through xml file
     JSER_PERSISTENCE_XML      = 0x1<<2
 }JSER_PERSISTENCE_TYPE;
 
+//default sql databse server
 #define JSER_SQL_LOCALHOST      "localhost"
+//default sql databse user
 #define JSER_SQL_USER           "root"
+//default sql databse password
 #define JSER_SQL_PASSWORD       ""
+//default sql databse port
 #define JSER_SQL_PORT           3306
+//default sql databse name
 #define JSER_SQL_DB_NAME        "db_jphone"
 
 class JSerialization: public JObject{
@@ -147,6 +166,7 @@ public:
     JList<JPER_RECORD> GetList(JCHAR* pName) ;
 
 private:
+    //persistence handler
     JPersistence* m_pPersistence;
 };
 

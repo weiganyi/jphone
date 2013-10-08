@@ -10,7 +10,7 @@
 #define _JPHONE_AGENT_H_
 
 
-//JPhoneAgent definication
+//JPhoneAgent definition
 //select time for wait respone
 #define JPHONE_AGENT_SELECT_TIME   500*1000    //millisecond
 #define JPHONE_AGENT_SELECT_TIME2  100*1000    //millisecond

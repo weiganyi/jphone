@@ -12,7 +12,7 @@
 
 namespace JFrameWork{
 
-//JHash definication
+//JHash definition
 class JHash: public JObject{
 public:
     JHash();
@@ -24,7 +24,7 @@ private:
 };
 
 
-//JHashData definication
+//JHashData definition
 //string format module
 #define JS_M_JMEMORY        "m_jmemory"
 #define JS_M_JTIMER         "m_jtimer"
@@ -76,7 +76,7 @@ private:
 };
 
 
-//JRoute definication
+//JRoute definition
 //class JRoute only works for the communication between with the JCommEngine of the processes 
 //and threads, and the other JCommEngines that works for the other purpuses willn't find route 
 //from the class JRoute.

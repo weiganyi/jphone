@@ -12,7 +12,7 @@
 
 namespace JFrameWork{
 
-//JAutoPtrBase definication
+//JAutoPtrBase definition
 template<class TYPE>
 class JAutoPtrBase: public JObject{
 public:
@@ -32,7 +32,7 @@ private:
 };
 
 
-//JAutoPtr definication
+//JAutoPtr definition
 template<class TYPE>
 class JAutoPtr: public JAutoPtrBase<TYPE>{
 public:

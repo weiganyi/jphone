@@ -81,6 +81,7 @@ BOOL CContactDlg::OnInitDialog()
     {
 	    pAgent = pCJPhoneDlg->GetAgent();
         EnterCriticalSection(&g_criticalSection);
+        //get the contact number list
         pAgent->GetContact();
         pAgent->GetContactRsp(&clsContactList);
         LeaveCriticalSection(&g_criticalSection);
@@ -90,6 +91,7 @@ BOOL CContactDlg::OnInitDialog()
             pTree->SetImageList(&pCJPhoneDlg->m_imageList, TVSIL_NORMAL);
 
             hRootItem = pTree->InsertItem("Contact", TVI_ROOT);
+            //insert contact number into the tree one by one
             for (uiIdx=0; uiIdx<JPJSIP_MAX_NUMBER; uiIdx++)
             {
                 if (clsContactList.GetContactNumber(uiIdx).GetLength())
@@ -124,6 +126,7 @@ void CContactDlg::OnDblclkTreeContact(NMHDR* pNMHDR, LRESULT* pResult)
 	{
         if (pTree)
         {
+            //get the selected number
     	    hSelectedItem = pTree->GetSelectedItem();
             clsNumber = pTree->GetItemText(hSelectedItem);
 
@@ -135,6 +138,7 @@ void CContactDlg::OnDblclkTreeContact(NMHDR* pNMHDR, LRESULT* pResult)
             if (pAgent)
             {
                 EnterCriticalSection(&g_criticalSection);
+                //start click to call
                 pAgent->ClickContact(&clsClickContact);
                 LeaveCriticalSection(&g_criticalSection);
             }

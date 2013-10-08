@@ -19,14 +19,23 @@ public:
 // Dialog Data
 	//{{AFX_DATA(CCfgDlg)
 	enum { IDD = IDD_CFG_DIALOG };
+	//call number
 	CString	m_number;
+	//auth number
 	CString	m_authname;
+	//password
 	CString	m_authpasswd;
+	//proxy address
 	CString	m_proxyaddr;
+	//log server address
 	CString	m_logaddr;
+	//log server port
 	CString	m_logport;
+	//whether log into the file
 	BOOL	m_logfile;
+	//whether log to remote server
 	BOOL	m_logremote;
+	//flag
 	int		m_saveMethod;
 	//}}AFX_DATA
 

@@ -10,7 +10,7 @@
 #define _JLOGSERVER_AGENT_H_
 
 
-//JLogServerAgent definication
+//JLogServerAgent definition
 //the time length for wait response after get request sending
 #define JLOGSERVER_AGENT_SELECT_TIME   500*1000    //millisecond
 #define JLOGSERVER_AGENT_SELECT_TIME2  100*1000    //millisecond

@@ -20,11 +20,15 @@
 #include <pjmedia.h>
 #include <pjmedia-codec.h>
 
+//debug level for sip stack
 #define JPJSIP_CONSOLE_LEVEL    4
+//local port for sip stack
 #define JPJSIP_LOCAL_PORT       6060
 
+//max contact number
 #define JPJSIP_MAX_NUMBER       20
 
+//status for sipua
 #define JSIPUA_S_STATUS_IDLE            "idle"
 #define JSIPUA_S_STATUS_REGISTERING     "registering"
 #define JSIPUA_S_STATUS_REGISTERED      "registered"
@@ -34,24 +38,35 @@
 #define JSIPUA_S_STATUS_CONNECTED       "connected"
 #define JSIPUA_S_STATUS_HOLDING         "holding"
 
+//dtmf duration for sip stack
 #define JSIPUA_ON_DURATION	        100
 #define JSIPUA_OFF_DURATION	        100
 
+//interval to flush contact number
 #define JSIPUA_FLUSH_INTERVAL       1000*5
 
+//key for contact number
 #define JSIPUA_CONTACT_FILE         "jphone_ua_contact"
+//key for config
 #define JSIPUA_CFG_FILE             "jphone_ua_cfg"
 
+//key for number
 #define JSIPUA_NUMBER               "number"
+//key for authname
 #define JSIPUA_AUTH_NAME            "authname"
+//key for password
 #define JSIPUA_AUTH_PASSWORD        "authpwd"
+//key for proxy address
 #define JSIPUA_PROXY_ADDR           "proxyaddr"
 
+//local address
 #define JSIPUA_LOCAL_ADDR           JPHONE_LOCAL_ADDR
 #define JSIPUA_LOCAL_PORT           10003+JPRODUCT_PORT_OFFSET
 
-#define JS_T_JSIPUA         "t_jsipua"
+//sipus thread name
+#define JS_T_JSIPUA             "t_jsipua"
 
+//phone key
 typedef enum{
     JSIPUA_KEY_NONE = 0,
     JSIPUA_KEY_0,
@@ -71,6 +86,7 @@ typedef enum{
     JSIPUA_KEY_MAX
 }JSIPUA_KEY;
 
+//status for sipua
 typedef enum{
     JSIPUA_STATUS_IDLE,
     JSIPUA_STATUS_REGISTERING,
@@ -82,6 +98,7 @@ typedef enum{
     JSIPUA_STATUS_HOLDING
 }JSIPUA_STATUS;
 
+//callback function type
 typedef enum{
     JSIPUA_CB_TYPE_NONE,
     JSIPUA_CB_TYPE_INCOMING_CALL,
@@ -92,11 +109,13 @@ typedef enum{
     JSIPUA_CB_TYPE_MAX
 }JSIPUA_CB_TYPE;
 
+//key map
 typedef struct{
     JSIPUA_KEY eKey;
     JCHAR  cKey;
 }JSIPUA_KEY_MAP;
 
+//status map
 typedef struct{
     JSIPUA_STATUS eStatus;
     JCHAR*  pStatus;
@@ -105,7 +124,7 @@ typedef struct{
 
 class JPjSipUa;
 
-//JPjSipUaCfg definication
+//JPjSipUaCfg definition
 class JPjSipUaCfg: public JEventBody{
 public:
     JPjSipUaCfg();
@@ -119,7 +138,9 @@ public:
     JUINT32 Serialize(JCHAR* pBuf, JUINT32 uiMaxNum);
     JUINT32 DeSerialize(JCHAR* pBuf);
 
+    //assignment operator
     JUINT32 operator=(JPjSipUaCfg& rPjSipUaCfg);
+
     JString& GetNumber();
     JUINT32 SetNumber(JString& rStr);
     JString& GetAuthName();
@@ -130,14 +151,18 @@ public:
     JUINT32 SetProxyAddr(JString& rStr);
 
 private:
+    //sip number
     JString m_Number;
+    //sip auth number
     JString m_AuthName;
+    //sip password
     JString m_AuthPasswd;
+    //sip proxy address
     JString m_ProxyAddr;
 };
 
 
-//JPjSipUaKey definication
+//JPjSipUaKey definition
 class JPjSipUaKey: public JEventBody{
 public:
     JPjSipUaKey();
@@ -151,16 +176,19 @@ public:
     JUINT32 Serialize(JCHAR* pBuf, JUINT32 uiMaxNum);
     JUINT32 DeSerialize(JCHAR* pBuf);
 
+    //assignment operator
     JUINT32 operator=(JPjSipUaKey& rPjSipUaKey);
+
     JString& GetKey();
     JUINT32 SetKey(JString& rStr);
 
 private:
+    //presss key
     JString m_Key;
 };
 
 
-//JPjSipUaClickContact definication
+//JPjSipUaClickContact definition
 class JPjSipUaClickContact: public JEventBody{
 public:
     JPjSipUaClickContact();
@@ -174,16 +202,19 @@ public:
     JUINT32 Serialize(JCHAR* pBuf, JUINT32 uiMaxNum);
     JUINT32 DeSerialize(JCHAR* pBuf);
 
+    //assignment operator
     JUINT32 operator=(JPjSipUaClickContact& rPjSipUaClickContact);
+
     JString& GetContactNumber();
     JUINT32 SetContactNumber(JString& rStr);
 
 private:
+    //selected contact number
     JString m_ContactNumber;
 };
 
 
-//JPjSipUaCallStatus definication
+//JPjSipUaCallStatus definition
 class JPjSipUaCallStatus: public JEventBody{
 public:
     JPjSipUaCallStatus();
@@ -197,19 +228,23 @@ public:
     JUINT32 Serialize(JCHAR* pBuf, JUINT32 uiMaxNum);
     JUINT32 DeSerialize(JCHAR* pBuf);
 
+    //assignment operator
     JUINT32 operator=(JPjSipUaCallStatus& rPjSipUaCallStatus);
+
     JString& GetNumber();
     JUINT32 SetNumber(JString& rStr);
     JString& GetStatus();
     JUINT32 SetStatus(JString& rStr);
 
 private:
+    //call number
     JString m_Number;
+    //number status
     JString m_Status;
 };
 
 
-//JPjSipUaContactList definication
+//JPjSipUaContactList definition
 class JPjSipUaContactList: public JEventBody{
 public:
     JPjSipUaContactList();
@@ -223,16 +258,19 @@ public:
     JUINT32 Serialize(JCHAR* pBuf, JUINT32 uiMaxNum);
     JUINT32 DeSerialize(JCHAR* pBuf);
 
+    //assignment operator
     JUINT32 operator=(JPjSipUaContactList& rPjSipUaContactList);
+
     JString& GetContactNumber(JUINT32 uiIdx);
     JUINT32 SetContactNumber(JUINT32 uiIdx, JString& rStr);
 
 private:
+    //contact number list
     JString m_ContactNumber[JPJSIP_MAX_NUMBER];
 };
 
 
-//JPjSipCallback definication
+//JPjSipCallback definition
 class JPjSipCallback: public JEventBody{
 public:
     JPjSipCallback();
@@ -246,7 +284,9 @@ public:
     JUINT32 Serialize(JCHAR* pBuf, JUINT32 uiMaxNum);
     JUINT32 DeSerialize(JCHAR* pBuf);
 
+    //assignment operator
     JUINT32 operator=(JPjSipCallback& rPjSipCallback);
+
     JSIPUA_CB_TYPE GetCbType();
     JUINT32 SetCbType(JSIPUA_CB_TYPE type);
     JUINT32 GetCode();
@@ -261,16 +301,22 @@ public:
     JUINT32 SetRemoteNumber(JString& rStr);
 
 private:
+    //type for callback function
     JSIPUA_CB_TYPE eType;
+    //result code for callback function
     JUINT32 uiCode;
+    //state for callback function
     pjsip_inv_state	state;
+    //acc id for callback function
     pjsua_acc_id acc_id;
+    //call id for callback function
     pjsua_call_id call_id;
+    //caller number for callback function
     JString pRemoteNumber;
 };
 
 
-//JPjSip definication
+//JPjSip definition
 class JPjSip: public JObject{
 public:
     JPjSip();
@@ -302,12 +348,14 @@ public:
     JVOID ProcOnIncomingDtmf(JPjSipCallback* pPjSipCallback, JPjSipUa* pPjSipUa);
 
 private:
+    //acc id
     pjsua_acc_id m_accId;
+    //call id
     pjsua_call_id m_callId;
 };
 
 
-//JPjSipUa definication
+//JPjSipUa definition
 class JPjSipUa: public JModule{
 public:
     JPjSipUa();
@@ -339,23 +387,33 @@ public:
     friend JVOID OnIncomingDtmf(pjsua_call_id call_id, JINT32 dtmf);
 
 private:
+    //local sipua config
     JPjSipUaCfg m_cfg;
 
+    //current sipua status
     JSIPUA_STATUS m_status;
+    //current pressed number
     JString m_strCurrNumber;
 
+    //current contact number
     JList<JCHAR>  m_contactList;
     JUINT32 m_contactListNumber;
 
+    //timer handler
     JUINT32 m_timeHandler;
 
+    //lock to protect callback function access
     JLock m_Lock;
 
+    //persistence type
     JSER_PERSISTENCE_TYPE m_ePersistenceType;
+    //persistence handler
     JSerialization* m_pSerialization;
 
+    //pjsip object pointer
     JPjSip* m_pPjSip;
 
+    //agent thread object pointer
     JAgentThread* m_pAgentThread;
 
     JUINT32 ProcOnFlushContactList();

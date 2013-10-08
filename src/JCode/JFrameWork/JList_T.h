@@ -12,7 +12,7 @@
 
 namespace JFrameWork{
 
-//JListItem definication
+//JListItem definition
 template<class TYPE> class JListItem: public JObject{
 public:
     JListItem(TYPE* ptrData);
@@ -36,7 +36,7 @@ private:
 };
 
 
-//JListIterator definication
+//JListIterator definition
 template<class TYPE> class JListIterator: public JObject{
 public:
     JListIterator(JList<TYPE>& rList);
@@ -58,7 +58,7 @@ private:
 };
 
 
-//JList definication
+//JList definition
 template<class TYPE> class JList: public JObject{
 public:
     JList();
@@ -92,7 +92,7 @@ private:
 };
 
 
-//JQueue definication
+//JQueue definition
 template<class TYPE> class JQueue: public JObject{
 public:
     JQueue();

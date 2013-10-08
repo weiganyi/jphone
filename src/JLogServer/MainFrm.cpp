@@ -85,6 +85,7 @@ void CALLBACK lpStatusTimeProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWO
     }
     else
     {
+        //check whether new message coming
         sprintf(currSrv, "%u", pMainFrame->m_currLogSrv);
         strCurrSrv = currSrv;
         clsLogSrvNumber.SetSrvNumber(strCurrSrv);
@@ -96,6 +97,7 @@ void CALLBACK lpStatusTimeProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWO
             bHasMsg = atoi(clsLogSrvHasNewMsg.GetHasNewMsg().c_str());
         }
 
+        //save the remote address that already connected
         for (uiIdx=0; uiIdx<JLOGSRV_MAX_MSG_SRV; uiIdx++)
         {
             if (pMainFrame->m_remoteAddr[uiIdx] != clsLogSrvHasNewMsg.GetRmtAddr(uiIdx))
@@ -106,11 +108,13 @@ void CALLBACK lpStatusTimeProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWO
     }
     LeaveCriticalSection(&g_criticalSection);
 
+    //let client to repaint
     if (bHasMsg)
     {
         pMainFrame->Invalidate();
     }
 
+    //start a timer to check new message again
     pMainFrame->m_statusTimer = 
         timeSetEvent(JFRAME_GET_MSG_TIMER_PERIOD, 0, lpStatusTimeProc, dwUser, TIME_ONESHOT);
 
@@ -223,16 +227,20 @@ void CMainFrame::OnCfgListen()
 	CCfgListen listenCfg;
 	JLogSrvCfg clsLogSrvCfg;
 
+    //get log server config
     EnterCriticalSection(&g_criticalSection);
     m_pAgent->GetLogSrvCfg();
     m_pAgent->GetLogSrvCfgRsp(&clsLogSrvCfg);
     LeaveCriticalSection(&g_criticalSection);
 
+    //save the config
     listenCfg.m_address = clsLogSrvCfg.GetListenAddr().c_str();
     listenCfg.m_port = clsLogSrvCfg.GetListenPort().c_str();
 
+    //show the dialog box
 	listenCfg.DoModal();
 
+    //if the config had changed, save them to the main thread
     if (clsLogSrvCfg.GetListenAddr() != listenCfg.m_address.GetBuffer(JMAX_STRING_LEN) ||
         clsLogSrvCfg.GetListenPort() != listenCfg.m_port.GetBuffer(JMAX_STRING_LEN))
     {

@@ -38,6 +38,7 @@ JUINT32 JHash::CalcHashValue(JCHAR* pName)
 
     pOffset = pName;
     uiVal = *pOffset;
+    //calculate the hash value
     if (uiVal)
     {
         for (pOffset+=1; *pOffset!=0; ++pOffset)
@@ -160,6 +161,7 @@ JUINT32 JRoute::DelRoute(JCHAR* pProcName, JCHAR* pThrdName)
         SafeStrncat(strName, pProcName, uiProcLen, JMAX_STRING_LEN);
     }
 
+    //use process and thread name as hash key
     uiThrdLen = SafeStrlen(pThrdName);
     if (uiThrdLen)
     {
@@ -169,6 +171,7 @@ JUINT32 JRoute::DelRoute(JCHAR* pProcName, JCHAR* pThrdName)
     iOffset = JSingleton<JHash>::instance()->CalcHashValue(strName);
     if (iOffset)
     {
+        //calculate the offset in the hash table
         iPos = iOffset % JROUTE_MAX_HASH_TABLE;
 
         JListIterator<JHashData> clsListIter(m_pHashTable[iPos]);
@@ -176,6 +179,7 @@ JUINT32 JRoute::DelRoute(JCHAR* pProcName, JCHAR* pThrdName)
         {
             pListItem = clsListIter.Item();
 
+            //find the listitem in the hash list
             pData = pListItem->GetData();
             if (pData)
             {
@@ -211,6 +215,7 @@ JROUTE_TYPE JRoute::GetRouteType(JCHAR* pFromProcName,
         return ROUTE_TYPE_NONE;
     }
 
+    //return route type through the from name and to name
     if (pFromProcName && pToProcName && SafeStrcmp(pFromProcName, pToProcName) == 0)
     {
         if (pFromThrdName && pToThrdName && SafeStrcmp(pFromThrdName, pToThrdName) == 0)
@@ -258,6 +263,7 @@ JUINT32 JRoute::FindRoute(JCHAR* pProcName, JCHAR* pThrdName)
         SafeStrncat(strName, pProcName, uiProcLen, JMAX_STRING_LEN);
     }
 
+    //use process and thread name as hash key
     uiThrdLen = SafeStrlen(pThrdName);
     if (uiThrdLen)
     {
@@ -267,6 +273,7 @@ JUINT32 JRoute::FindRoute(JCHAR* pProcName, JCHAR* pThrdName)
     iOffset = JSingleton<JHash>::instance()->CalcHashValue(strName);
     if (iOffset)
     {
+        //calculate the offset in the hash table
         iPos = iOffset % JROUTE_MAX_HASH_TABLE;
 
         JListIterator<JHashData> clsListIter(m_pHashTable[iPos]);
@@ -274,6 +281,7 @@ JUINT32 JRoute::FindRoute(JCHAR* pProcName, JCHAR* pThrdName)
         {
             pListItem = clsListIter.Item();
 
+            //find the listitem in the hash list
             pData = pListItem->GetData();
             if (pData)
             {
@@ -317,6 +325,7 @@ JUINT32 JRoute::GetRoute(JCHAR* pProcName, JCHAR* pThrdName, JSOCKADDR_IN* pAddr
         SafeStrncat(strName, pProcName, uiProcLen, JMAX_STRING_LEN);
     }
 
+    //use process and thread name as hash key
     uiThrdLen = SafeStrlen(pThrdName);
     if (uiThrdLen)
     {
@@ -326,6 +335,7 @@ JUINT32 JRoute::GetRoute(JCHAR* pProcName, JCHAR* pThrdName, JSOCKADDR_IN* pAddr
     iOffset = JSingleton<JHash>::instance()->CalcHashValue(strName);
     if (iOffset)
     {
+        //calculate the offset in the hash table
         iPos = iOffset % JROUTE_MAX_HASH_TABLE;
 
         JListIterator<JHashData> clsListIter(m_pHashTable[iPos]);
@@ -333,6 +343,7 @@ JUINT32 JRoute::GetRoute(JCHAR* pProcName, JCHAR* pThrdName, JSOCKADDR_IN* pAddr
         {
             pListItem = clsListIter.Item();
 
+            //find the listitem in the hash list
             pData = pListItem->GetData();
             if (pData)
             {
@@ -389,6 +400,7 @@ JUINT32 JRoute::privAddRoute(JCHAR* pProcName,
         SafeStrncat(strName, pProcName, uiProcLen, JMAX_STRING_LEN);
     }
 
+    //use process and thread name as hash key
     uiThrdLen = SafeStrlen(pThrdName);
     if (uiThrdLen)
     {
@@ -398,7 +410,10 @@ JUINT32 JRoute::privAddRoute(JCHAR* pProcName,
     iOffset = JSingleton<JHash>::instance()->CalcHashValue(strName);
     if (iOffset)
     {
+        //calculate the offset in the hash table
         iPos = iOffset % JROUTE_MAX_HASH_TABLE;
+
+        //construct a hashdata
         pData = new JHashData;
         if (pData)
         {
@@ -417,6 +432,7 @@ JUINT32 JRoute::privAddRoute(JCHAR* pProcName,
                 pData->SetAddr(pAddr);
             }
 
+            //insert a item into the hash list
             pListItem = new JListItem<JHashData>(pData);
             if (pListItem)
             {

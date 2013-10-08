@@ -13,7 +13,7 @@
 //the max log server number
 #define JLOGSRV_MAX_MSG_SRV     10
 
-//JLogSrvCfg definication
+//JLogSrvCfg definition
 class JLogSrvCfg: public JEventBody{
 public:
     JLogSrvCfg();
@@ -41,7 +41,7 @@ private:
 };
 
 
-//JLogSrvNumber definication
+//JLogSrvNumber definition
 class JLogSrvNumber: public JEventBody{
 public:
     JLogSrvNumber();
@@ -67,7 +67,7 @@ private:
 };
 
 
-//JLogSrvHasNewMsg definication
+//JLogSrvHasNewMsg definition
 class JLogSrvHasNewMsg: public JEventBody{
 public:
     JLogSrvHasNewMsg();
@@ -98,7 +98,7 @@ private:
 };
 
 
-//JLogSrv definication
+//JLogSrv definition
 //cfg file name of the log server
 #define JLOGSRV_CFG_FILE             "jlogsrv_cfg"
 
@@ -167,7 +167,7 @@ private:
 };
 
 
-//JLogSrvThread definication
+//JLogSrvThread definition
 class JLogSrvThread: public JThread{
 public:
     JLogSrvThread(JString* pThdName = JNULL, 
@@ -198,7 +198,7 @@ private:
 };
 
 
-//JLogMsgThread definication
+//JLogMsgThread definition
 //the max log message number
 #define JLOGMSG_MAX_MSG  1024
 

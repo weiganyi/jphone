@@ -12,7 +12,7 @@
 
 namespace JFrameWork{
 
-//JFmt definication
+//JFmt definition
 typedef enum{
     JLOG_MOD_NONE,
     JLOG_MOD_LOG,
@@ -68,7 +68,7 @@ private:
 };
 
 
-//JLogDecorator definication
+//JLogDecorator definition
 //the max module number
 #define JLOG_MAX_MOD_NUM        JLOG_MOD_ALL
 //the max number of the log server thread
@@ -120,7 +120,7 @@ private:
 };
 
 
-//JLogTimeDecorator definication
+//JLogTimeDecorator definition
 class JLogTimeDecorator: public JLogDecorator{
 public:
     JLogTimeDecorator();
@@ -137,7 +137,7 @@ private:
 };
 
 
-//JLogOutput definication
+//JLogOutput definition
 class JLogOutput: public JObject{
 public:
     JLogOutput();
@@ -154,7 +154,7 @@ protected:
 };
 
 
-//JLogOutputLocal definication
+//JLogOutputLocal definition
 class JLogOutputLocal: public JLogOutput{
 public:
     JLogOutputLocal();
@@ -168,7 +168,7 @@ private:
 };
 
 
-//JLogOutputFile definication
+//JLogOutputFile definition
 class JLogOutputFile: public JLogOutput{
 public:
     JLogOutputFile(JCHAR* pFileName);
@@ -183,7 +183,7 @@ private:
 };
 
 
-//JLogOutputRemote definication
+//JLogOutputRemote definition
 class JLogOutputRemote: public JLogOutput{
 public:
     JLogOutputRemote(JString& rLocalAddr,
@@ -205,7 +205,7 @@ private:
 };
 
 
-//JLogCfg definication
+//JLogCfg definition
 class JLogCfg: public JEventBody{
 public:
     JLogCfg();
@@ -242,7 +242,7 @@ private:
 };
 
 
-//JLog definication
+//JLog definition
 class JLog: public JModule{
 public:
     JLog(JLOG_OUTPUT eMethod=JLOG_OUTPUT_NONE);
@@ -341,7 +341,7 @@ private:
 };
 
 
-//JLogAutoPtr definication
+//JLogAutoPtr definition
 //I hope function enter will be called while this object construct,
 //and function exit will be called while this object destruct(function exit), 
 //so I derive from the class autoptrbase

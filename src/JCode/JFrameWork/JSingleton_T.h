@@ -12,18 +12,24 @@
 
 namespace JFrameWork{
 
-//JSingleton definication
+//JSingleton definition
 template<class TYPE>
 class JSingleton: public JObject{
 public:
     JSingleton();
     ~JSingleton();
 
+    //return pointer
     static TYPE* instance();
+
+    //return reference
     static TYPE& instance2();
+
+    //only return object but not create new one
     static TYPE* try_instance();
 
 private:
+    //the object pointer
     static TYPE* m_pObject;
 };
 

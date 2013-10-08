@@ -12,7 +12,7 @@
 
 namespace JFrameWork{
 
-//JMemory definication
+//JMemory definition
 enum JMEMORY_TYPE{
     JMEM_TYPE_NONE,
     //fixed trunk for memory alloc
@@ -47,7 +47,7 @@ private:
 };
 
 
-//JTrunkMemory definication
+//JTrunkMemory definition
 //size for memory trunk block
 #define JTMEM_BLK_SIZE1         16
 #define JTMEM_BLK_SIZE2         64
@@ -130,7 +130,7 @@ private:
 };
 
 
-//JHeapMemory definication
+//JHeapMemory definition
 //size for heap momory
 #define JHMEM_MAX_HEAP_LEN        1024*1024
 
@@ -191,7 +191,7 @@ private:
 };
 
 
-//JStaticMemory definication
+//JStaticMemory definition
 //inteval for checking memory overwrite
 #define JMEMORY_CHECK_INTERVAL      1000*5
 //type number for memory

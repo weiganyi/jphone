@@ -100,6 +100,7 @@ JString& JString::operator+=(JString& rString)
 
     if (m_uiLen && m_pData)
     {
+        //store the old data
         pData = m_pData;
         uiLen = m_uiLen;
     }
@@ -107,6 +108,8 @@ JString& JString::operator+=(JString& rString)
     if (rString.m_uiLen && rString.m_pData && m_pAllocator)
     {
         uiLen += rString.m_uiLen;
+
+        //alloc new memory for data
         m_pData = m_pAllocator->Alloc(uiLen+1);
         if (m_pData)
         {
@@ -118,6 +121,7 @@ JString& JString::operator+=(JString& rString)
             SafeMemcat(m_pData, rString.m_pData, rString.m_uiLen, uiLen+1);
             m_uiLen = uiLen;
 
+            //free the old data
             if (pData)
             {
                 m_pAllocator->Free(pData);
@@ -142,6 +146,7 @@ JString& JString::operator+=(JCHAR* pStr)
 
     if (m_uiLen && m_pData)
     {
+        //store the old data
         pData = m_pData;
         uiLen = m_uiLen;
     }
@@ -149,6 +154,8 @@ JString& JString::operator+=(JCHAR* pStr)
     if (SafeStrlen(pStr) && m_pAllocator)
     {
         uiLen += SafeStrlen(pStr);
+
+        //alloc new memory for data
         m_pData = m_pAllocator->Alloc(uiLen+1);
         if (m_pData)
         {
@@ -160,6 +167,7 @@ JString& JString::operator+=(JCHAR* pStr)
             SafeMemcat(m_pData, pStr, SafeStrlen(pStr), uiLen+1);
             m_uiLen = uiLen;
 
+            //free the old data
             if (pData)
             {
                 m_pAllocator->Free(pData);
@@ -208,6 +216,7 @@ JUINT32 JString::SetAllocator(JStaticMemory* pAllocator)
 
 JUINT32 JString::Copy(JString& rString)
 {
+    //free the old data
     if (m_uiLen && m_pData && m_pAllocator)
     {
         m_pAllocator->Free(m_pData);
@@ -215,6 +224,7 @@ JUINT32 JString::Copy(JString& rString)
 		m_uiLen = 0;
     }
 
+    //alloc new memory and copy the data
     if (rString.m_uiLen && rString.m_pData && m_pAllocator)
     {
         m_pData = m_pAllocator->Alloc(rString.m_uiLen+1);
@@ -241,6 +251,7 @@ JUINT32 JString::Copy(JCHAR* pStr)
 		return JFAILURE;
 	}
 
+    //free the old data
     if (m_uiLen && m_pData && m_pAllocator)
     {
         m_pAllocator->Free(m_pData);
@@ -248,6 +259,7 @@ JUINT32 JString::Copy(JCHAR* pStr)
 		m_uiLen = 0;
     }
 
+    //alloc new memory and copy the data
 	uiLen = SafeStrlen(pStr);
     if (uiLen && m_pAllocator)
     {

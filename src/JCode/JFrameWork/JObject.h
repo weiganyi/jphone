@@ -63,7 +63,7 @@ class JCommConnector;
 class JAgentThread;
 
 
-//JObject definication
+//JObject definition
 typedef struct _JSYSTIME{
     JUINT32 uiYear; 
     JUINT32 uiMonth; 
@@ -119,7 +119,7 @@ protected:
 };
 
 
-//JModule definication
+//JModule definition
 class JModule: public JObject{
 public:
     JModule();
@@ -133,7 +133,7 @@ private:
 };
 
 
-//JException definication
+//JException definition
 class JException: public JObject{
 public:
     JException();
@@ -147,7 +147,7 @@ private:
 };
 
 
-//JEventBody definication
+//JEventBody definition
 class JEventBody: public JObject{
 public:
     JEventBody();

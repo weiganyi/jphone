@@ -12,10 +12,12 @@
 
 namespace JFrameWork{
 
-//JSocket definication
+//JSocket definition
 typedef enum{
     JSOCKET_NONE,
+    //udp socket
     JSOCKET_UDP,
+    //tcp socket
     JSOCKET_TCP,
     JSOCKET_MAX,
 }JSOCKET_TYPE;
@@ -37,11 +39,12 @@ public:
     JSOCKET GetFd();
 
 protected:
+    //socket id
     JSOCKET m_fd;
 };
 
 
-//JUdpSocket definication
+//JUdpSocket definition
 class JUdpSocket: public JSocket{
 public:
     JUdpSocket();
@@ -57,11 +60,12 @@ public:
     JINT32 RecvBuf(JCHAR* ptrBuf, const JUINT32 uiLen, JSOCKADDR_IN* pFrom, JINT32* iFromLen);
 
 private:
+    //remote address
     JSOCKADDR_IN m_rmtAddr;
 };
 
 
-//JTcpSocket definication
+//JTcpSocket definition
 class JTcpSocket: public JSocket{
 public:
     JTcpSocket();
@@ -77,15 +81,20 @@ public:
     JINT32 RecvBuf(JCHAR* ptrBuf, const JUINT32 uiLen, JSOCKADDR_IN* pFrom, JINT32* iFromLen);
 
 private:
+    //local address
     JSOCKADDR_IN m_lclAddr;
+    //remote address
     JSOCKADDR_IN m_rmtAddr;
 };
 
 
-//JCommEngine definication
+//JCommEngine definition
+//max length for msg buffer
 #define JCOMM_MSG_BUF_LEN       1024
+//select time for checking message
 #define JCOMM_SELECT_TIME       100*1000    //millisecond
-#define JCOMM_SELECT_INDEFINITE 0           //blocking
+//block to check message
+#define JCOMM_SELECT_INDEFINITE 0           
 
 class JCommEngine: public JObject{
 public:
@@ -113,13 +122,15 @@ public:
     JSOCKADDR_IN* GetRemoteAddr();
 
 private:
+    //socket type
     JSOCKET_TYPE m_eType;
+    //socket handler
     JSocket* m_pSocket;
 
 };
 
 
-//JCommConnector definication
+//JCommConnector definition
 class JCommConnector: public JObject{
 public:
     JCommConnector();
@@ -130,9 +141,12 @@ public:
     JCommEngine* Connect();
 
 private:
+    //local address
     JSOCKADDR_IN m_lclAddr;
+    //remote address
     JSOCKADDR_IN m_rmtAddr;
 
+    //socket id
     JSOCKET m_fd;
 
     JSOCKET Create();
@@ -140,7 +154,7 @@ private:
 };
 
 
-//JCommAcceptor definication
+//JCommAcceptor definition
 class JCommAcceptor: public JObject{
 public:
     JCommAcceptor();
@@ -152,9 +166,12 @@ public:
     JCommEngine* Accept();
 
 private:
+    //local address
     JSOCKADDR_IN m_lclAddr;
+    //remote address
     JSOCKADDR_IN m_rmtAddr;
 
+    //socket id
     JSOCKET m_fd;
 
     JSOCKET Create();
@@ -162,7 +179,8 @@ private:
 };
 
 
-//JCommEngineGroup definication
+//JCommEngineGroup definition
+//max number of the comm engine for one group
 #define JCOMM_MAX_COMMENGINE   10
 
 class JCommEngineGroup: public JObject{
@@ -174,7 +192,9 @@ public:
     JCommEngine* HasMessage(JUINT32 uiMilisecond = JCOMM_SELECT_TIME);
 
 private:
+    //commengine handler array
     JCommEngine* m_pCommEngine[JCOMM_MAX_COMMENGINE];
+    //how much comm engine already been used
     JUINT32 m_uiUsedCommEngine;
 };
 

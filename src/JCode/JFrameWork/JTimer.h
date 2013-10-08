@@ -12,23 +12,34 @@
 
 namespace JFrameWork{
 
-//JSysTime definication
+//JSysTime definition
+//the timer level is microsecond
 #define JTIMER_MIN_PERIOD   1000
+//how much timer can be manage
 #define JTIMER_MAX_CB_NUM   10
 
 typedef enum{
+    //timer only run one time
     JTIMER_TYPE_ONESHOT,
+    //timer can run periodicly
     JTIMER_TYPE_PERIODIC
 }JTIMER_TYPE;
 
+//callback function type
 typedef JUINT32 (*JTIMER_CALLBACK)(JVOID* pData);
 
 typedef struct{
+    //if is used
     JUINT8  isUsed;
+    //timer type
     JTIMER_TYPE eType;
+    //callback function
     JTIMER_CALLBACK pfFunc;
+    //data pointer
     JVOID*  pData;
-    JUINT32 uiTime;   //millisecond
+    //timer length
+    JUINT32 uiTime;     //millisecond
+    //expire time
     JSYSTIME expire;
 }JTIMER_CB;
 
@@ -64,6 +75,7 @@ public:
     JUINT32 SetMilliseconds(JUINT32 uiVal);
 
 private:
+    //time value
     JUINT32 uiYear; 
     JUINT32 uiMonth; 
     JUINT32 uiDayOfWeek; 
@@ -75,7 +87,7 @@ private:
 };
 
 
-//JTimer definication
+//JTimer definition
 class JTimer: public JModule{
 public:
     JTimer();
@@ -98,12 +110,16 @@ public:
     friend void CALLBACK lpTimeProc(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2);
 
 private:
-
+    //timer handler
     JUINT32 m_handler;
+
+    //timer control block
     JTIMER_CB m_timerCB[JTIMER_MAX_CB_NUM];
 
+    //lock to protect control block access
     JLock m_Lock;
 
+    //agent thread object
     JAgentThread* m_pAgentThread;
 
     JUINT32 GetFreeTimerCb();

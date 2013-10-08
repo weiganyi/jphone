@@ -13,6 +13,7 @@ using namespace JFrameWork;
 #include "JSipUa.h"
 
 
+//key map table
 JSIPUA_KEY_MAP gKeyMap[] = {
  {JSIPUA_KEY_0, '0'},
  {JSIPUA_KEY_1, '1'},
@@ -32,6 +33,7 @@ JSIPUA_KEY_MAP gKeyMap[] = {
  {JSIPUA_KEY_MAX, 0x00},
 };
 
+//status map table
 JSIPUA_STATUS_MAP gStatusMap[] = {
 {JSIPUA_STATUS_IDLE, JSIPUA_S_STATUS_IDLE},
 {JSIPUA_STATUS_REGISTERING, JSIPUA_S_STATUS_REGISTERING},
@@ -108,11 +110,13 @@ JUINT32 JPjSipUaCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+    //first store the number length into the buffer
 	uiLen = m_Number.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the number into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_Number.c_str(), uiLen, tmpMaxNum);
@@ -121,11 +125,13 @@ JUINT32 JPjSipUaCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //first store the auth number length into the buffer
 	uiLen = m_AuthName.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the auth number into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_AuthName.c_str(), uiLen, tmpMaxNum);
@@ -134,11 +140,13 @@ JUINT32 JPjSipUaCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //first store the password length into the buffer
 	uiLen = m_AuthPasswd.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the password into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_AuthPasswd.c_str(), uiLen, tmpMaxNum);
@@ -147,11 +155,13 @@ JUINT32 JPjSipUaCfg::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //first store the proxy address length into the buffer
 	uiLen = m_ProxyAddr.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the proxy address into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_ProxyAddr.c_str(), uiLen, tmpMaxNum);
@@ -178,8 +188,10 @@ JUINT32 JPjSipUaCfg::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+    //first get the number length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the number from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -187,8 +199,10 @@ JUINT32 JPjSipUaCfg::DeSerialize(JCHAR* pBuf)
 		pOffset += *pLen;
 	}
 
+    //first get the auth number length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the auth number from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -196,8 +210,10 @@ JUINT32 JPjSipUaCfg::DeSerialize(JCHAR* pBuf)
 		pOffset += *pLen;
 	}
 
+    //first get the password length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the password from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -205,8 +221,10 @@ JUINT32 JPjSipUaCfg::DeSerialize(JCHAR* pBuf)
 		pOffset += *pLen;
 	}
 
+    //first get the proxy address length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the proxy address from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -331,11 +349,13 @@ JUINT32 JPjSipUaKey::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+    //first store the key length into the buffer
 	uiLen = m_Key.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//first store the key length into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_Key.c_str(), uiLen, tmpMaxNum);
@@ -362,8 +382,10 @@ JUINT32 JPjSipUaKey::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+    //first get the key length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//first get the key length from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -449,11 +471,13 @@ JUINT32 JPjSipUaClickContact::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+    //first store the contact number length into the buffer
 	uiLen = m_ContactNumber.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the contact number into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_ContactNumber.c_str(), uiLen, tmpMaxNum);
@@ -480,8 +504,10 @@ JUINT32 JPjSipUaClickContact::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+    //first get the contact number length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the contact number from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -570,11 +596,13 @@ JUINT32 JPjSipUaCallStatus::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+    //first store the number length into the buffer
 	uiLen = m_Number.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the number into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_Number.c_str(), uiLen, tmpMaxNum);
@@ -583,11 +611,13 @@ JUINT32 JPjSipUaCallStatus::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //first store the status length into the buffer
 	uiLen = m_Status.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the status into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, m_Status.c_str(), uiLen, tmpMaxNum);
@@ -614,8 +644,10 @@ JUINT32 JPjSipUaCallStatus::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+    //first get the number length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the number from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -623,8 +655,10 @@ JUINT32 JPjSipUaCallStatus::DeSerialize(JCHAR* pBuf)
 		pOffset += *pLen;
 	}
 
+    //first get the status length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the status from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -754,11 +788,13 @@ JUINT32 JPjSipUaContactList::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 			break;
 		}
 
+        //first store the contact number length into the buffer
 		uiLen = m_ContactNumber[uiIdx].GetLength();
 		pLen = reinterpret_cast<JUINT32*>(pOffset);
 		*pLen = uiLen;
 		pOffset += sizeof(JUINT32);
 		tmpMaxNum -= sizeof(JUINT32);
+		//first store the contact number length into the buffer
 		if (uiLen)
 		{
 			SafeMemcpy(pOffset, m_ContactNumber[uiIdx].c_str(), uiLen, tmpMaxNum);
@@ -789,8 +825,10 @@ JUINT32 JPjSipUaContactList::DeSerialize(JCHAR* pBuf)
 
 	while(pOffset)
 	{
+	    //first get the contact number length from buffer
 		pLen = reinterpret_cast<JUINT32*>(pOffset);
 		pOffset += sizeof(JUINT32);
+		//then get the contact number from buffer
 		if (*pLen)
 		{
 			SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -930,6 +968,7 @@ JUINT32 JPjSipCallback::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 	pOffset = pBuf;
 	tmpMaxNum = uiMaxNum;
 
+    //store the callback type into the buffer
 	{
 		uiLen = sizeof(JSIPUA_CB_TYPE);
 
@@ -940,6 +979,7 @@ JUINT32 JPjSipCallback::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the result code into the buffer
 	{
 		uiLen = sizeof(JUINT32);
 
@@ -950,6 +990,7 @@ JUINT32 JPjSipCallback::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the state into the buffer
 	{
 		uiLen = sizeof(pjsip_inv_state);
 
@@ -960,6 +1001,7 @@ JUINT32 JPjSipCallback::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the acc id into the buffer
 	{
 		uiLen = sizeof(pjsua_acc_id);
 
@@ -970,6 +1012,7 @@ JUINT32 JPjSipCallback::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //store the call id into the buffer
 	{
 		uiLen = sizeof(pjsua_call_id);
 
@@ -980,11 +1023,13 @@ JUINT32 JPjSipCallback::Serialize(JCHAR* pBuf, JUINT32 uiMaxNum)
 		tmpMaxNum -= uiLen;
 	}
 
+    //first store the caller number length into the buffer
 	uiLen = pRemoteNumber.GetLength();
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	*pLen = uiLen;
 	pOffset += sizeof(JUINT32);
 	tmpMaxNum -= sizeof(JUINT32);
+	//then store the caller number into the buffer
 	if (uiLen)
 	{
 		SafeMemcpy(pOffset, pRemoteNumber.c_str(), uiLen, tmpMaxNum);
@@ -1017,28 +1062,35 @@ JUINT32 JPjSipCallback::DeSerialize(JCHAR* pBuf)
 
 	pOffset = pBuf;
 
+    //get the callback type from buffer
 	pType = reinterpret_cast<JSIPUA_CB_TYPE*>(pOffset);
 	eType = *pType;
 	pOffset += sizeof(JSIPUA_CB_TYPE);
 
+    //get the result code type from buffer
 	pCode = reinterpret_cast<JUINT32*>(pOffset);
 	uiCode = *pCode;
 	pOffset += sizeof(JUINT32);
 
+    //get the state type from buffer
 	pState = reinterpret_cast<pjsip_inv_state*>(pOffset);
 	state = *pState;
 	pOffset += sizeof(pjsip_inv_state);
 
+    //get the acc id type from buffer
 	pAccId = reinterpret_cast<pjsua_acc_id*>(pOffset);
 	acc_id = *pAccId;
 	pOffset += sizeof(pjsua_acc_id);
 
+    //get the call id type from buffer
 	pCallId = reinterpret_cast<pjsua_call_id*>(pOffset);
 	call_id = *pCallId;
 	pOffset += sizeof(pjsua_call_id);
 
+    //first get the caller number length from buffer
 	pLen = reinterpret_cast<JUINT32*>(pOffset);
 	pOffset += sizeof(JUINT32);
+	//then get the caller number from buffer
 	if (*pLen)
 	{
 		SafeStrncpy(strBuffer, pOffset, *pLen, JMAX_STRING_LEN);
@@ -1168,17 +1220,21 @@ JUINT32 JPjSip::SipUaCreate()
         return JFAILURE;
     }
 
-    //init pjsua
+    //get default config
 	pjsua_config_default(&cfg);
+
+    //set callback
 	cfg.cb.on_incoming_call = &OnIncomingCall;
 	cfg.cb.on_call_media_state = &OnCallMediaState;
 	cfg.cb.on_call_state = &OnCallState;
 	cfg.cb.on_reg_state2 = &OnRegState2;
 	cfg.cb.on_dtmf_digit = &OnIncomingDtmf;
 
+    //set log level
 	pjsua_logging_config_default(&log_cfg);
 	log_cfg.console_level = JPJSIP_CONSOLE_LEVEL;
 
+    //set media params and init pjsua
     pjsua_media_config_default(&media_cfg);
     media_cfg.ec_options = PJMEDIA_ECHO_SIMPLE;
     media_cfg.ec_tail_len = 256;
@@ -1263,11 +1319,15 @@ JUINT32 JPjSip::Register(JString& rNumber,
         return JFAILURE;
     }
 
+    //get default acc config
 	pjsua_acc_config_default(&cfg);
+
+    //set reg number and address
 	SafeSprintf(id, JMAX_STRING_LEN, "sip:%s@%s", rNumber.c_str(), rProxyAddr.c_str());
 	cfg.id = pj_str(id);
 	SafeSprintf(reg_uri, JMAX_STRING_LEN, "sip:%s", rProxyAddr.c_str());
 	cfg.reg_uri = pj_str(reg_uri);
+	//set auth number and password
 	if (rAuthName.GetLength()&& rAuthPasswd.GetLength())
 	{
     	cfg.cred_count = 1;
@@ -1278,6 +1338,7 @@ JUINT32 JPjSip::Register(JString& rNumber,
     	cfg.cred_info[0].data = pj_str(rAuthPasswd.c_str());
 	}
 
+    //start a register
 	status = pjsua_acc_add(&cfg, PJ_TRUE, &m_accId);
 	if (status != PJ_SUCCESS)
     {
@@ -1305,6 +1366,7 @@ JUINT32 JPjSip::UnRegister()
         return JFAILURE;
     }
 
+    //start a unregister
     status = pjsua_acc_del(m_accId);
 	if (status != PJ_SUCCESS)
     {
@@ -1336,9 +1398,11 @@ JUINT32 JPjSip::StartCall(JString& rNumber, JString& rProxyAddr)
         return JFAILURE;
     }
 
+    //set call number and address
 	SafeSprintf(ptrRmtAddr, JMAX_STRING_LEN, "sip:%s@%s", rNumber.c_str(), rProxyAddr.c_str());
 	uri = pj_str(ptrRmtAddr);
 
+    //start a call
 	status = pjsua_call_make_call(m_accId, &uri, 0, NULL, NULL, &m_callId);
 	if (status != PJ_SUCCESS)
     {
@@ -1361,9 +1425,11 @@ JUINT32 JPjSip::DialDtmf(JCHAR cKey)
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "JPjSip::DialDtmf");
 
+    //set dtmf key
     SafeSprintf(buf, JMAX_STRING_LEN, "%c", cKey);
     digits = pj_str(buf);
 
+    //put the dtmf key into the call
 	status = pjsua_call_dial_dtmf(m_callId, &digits);
 	if (status != PJ_SUCCESS)
     {
@@ -1384,6 +1450,7 @@ JUINT32 JPjSip::Answer(JUINT32 uiCode)
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "JPjSip::Answer");
 
+    //answer the incoming call
     status = pjsua_call_answer(m_callId, 200, NULL, NULL);
 	if (status != PJ_SUCCESS)
     {
@@ -1404,6 +1471,7 @@ JUINT32 JPjSip::Hold()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "JPjSip::Hold");
 
+    //hold the call
     status = pjsua_call_set_hold(m_callId, NULL);
 	if (status != PJ_SUCCESS)
     {
@@ -1424,6 +1492,7 @@ JUINT32 JPjSip::UnHold()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "JPjSip::UnHold");
 
+    //unhold the call
     status = pjsua_call_reinvite(m_callId, PJ_TRUE, NULL);
 	if (status != PJ_SUCCESS)
     {
@@ -1444,6 +1513,7 @@ JUINT32 JPjSip::HangUp()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "JPjSip::HangUp");
 
+    //hangup the call
     status = pjsua_call_hangup(m_callId, 0, NULL, NULL);
 	if (status != PJ_SUCCESS)
     {
@@ -1457,6 +1527,7 @@ JUINT32 JPjSip::HangUp()
 	return JSUCCESS;
 }
 
+//set codec enable and disable
 JUINT32 JPjSip::SetCodecPriority()
 {
     pj_status_t status;
@@ -1481,6 +1552,7 @@ JUINT32 JPjSip::SetCodecPriority()
 	return JSUCCESS;
 }
 
+//get number from remote address
 JUINT32 JPjSip::GetRemoteNumber(JCHAR* pRemoteInfo, JCHAR* pNumber)
 {
     JCHAR* pOffset1 = 0;
@@ -1580,6 +1652,7 @@ JVOID JPjSip::ProcOnCallState(JPjSipCallback* pPjSipCallback, JPjSipUa* pPjSipUa
     {
         case PJSIP_INV_STATE_CALLING:
         {
+            //store the call id
             m_callId = pPjSipCallback->GetCallId();
 
             pPjSipUa->StateChange(JSIPUA_STATUS_OUTGOING);
@@ -1595,10 +1668,13 @@ JVOID JPjSip::ProcOnCallState(JPjSipCallback* pPjSipCallback, JPjSipUa* pPjSipUa
         }
         case PJSIP_INV_STATE_INCOMING:
         {
+            //store the call number
             pPjSipUa->SetCurrNumber(pPjSipCallback->GetRemoteNumber());
 
+            //store the call number into the contact list
             pPjSipUa->StoreContactNumber();
 
+            //store the call id
             m_callId = pPjSipCallback->GetCallId();
 
             pPjSipUa->StateChange(JSIPUA_STATUS_INCOMING);
@@ -1709,6 +1785,7 @@ JUINT32 OnFlushContactList(JVOID* pData)
         pModuleThread = dynamic_cast<JModuleThread*>(pThread);
         if (pModuleThread)
         {
+            //get the communication engine to send event
     	    pComEngine = pModuleThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -1738,6 +1815,7 @@ JVOID OnIncomingCall(pjsua_acc_id acc_id,
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "OnIncomingCall");
 
+    //answer the incoming call with 180
     status = pjsua_call_answer(call_id, 180, NULL, NULL);
 	if (status != PJ_SUCCESS)
     {
@@ -1767,6 +1845,7 @@ JVOID OnCallMediaState(pjsua_call_id call_id)
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "OnCallMediaState");
 
+    //get the call info
     status = pjsua_call_get_info(call_id, &ci);
 	if (status != PJ_SUCCESS)
     {
@@ -1777,6 +1856,7 @@ JVOID OnCallMediaState(pjsua_call_id call_id)
     	return;
     }
 
+    //connect the call slot id to the sound device
     if (ci.media_status == PJSUA_CALL_MEDIA_ACTIVE)
     {
     	// When media is active, connect call to sound device.
@@ -1828,6 +1908,7 @@ JVOID OnCallState(pjsua_call_id call_id, pjsip_event *e)
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "OnCallState");
 
+    //get call info
     status = pjsua_call_get_info(call_id, &ci);
 	if (status != PJ_SUCCESS)
     {
@@ -1839,9 +1920,11 @@ JVOID OnCallState(pjsua_call_id call_id, pjsip_event *e)
     }
 
     pEvent = new JEvent(JEVT_SIPUA_CALLBACK);
+    //construct the callback body
     pPjSipCallbackBody = new JPjSipCallback;
 	if (pEvent && pPjSipCallbackBody)
 	{
+	    //store some params into the callback body
 		pPjSipCallbackBody->SetCbType(JSIPUA_CB_TYPE_CALL_STATE);
 		pPjSipCallbackBody->SetState(ci.state);
 		pPjSipCallbackBody->SetCallId(call_id);
@@ -1861,6 +1944,7 @@ JVOID OnCallState(pjsua_call_id call_id, pjsip_event *e)
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+            //get the communication engine to send event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -1905,9 +1989,11 @@ JVOID OnRegState2(pjsua_acc_id acc_id, pjsua_reg_info *info)
         JLOG_MOD_SIPUA, "OnRegState2");
 
     pEvent = new JEvent(JEVT_SIPUA_CALLBACK);
+    //construct the callback body
     pPjSipCallbackBody = new JPjSipCallback;
 	if (pEvent && pPjSipCallbackBody)
 	{
+	    //store some params into the callback body
 		pPjSipCallbackBody->SetCbType(JSIPUA_CB_TYPE_REG_STATE2);
 		pPjSipCallbackBody->SetCode(info->cbparam->code);
 		pPjSipCallbackBody->SetAccId(acc_id);
@@ -1924,6 +2010,7 @@ JVOID OnRegState2(pjsua_acc_id acc_id, pjsua_reg_info *info)
         pAgentThread = dynamic_cast<JAgentThread*>(pThread);
         if (pAgentThread)
         {
+            //get the communication engine to send event
     	    pComEngine = pAgentThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -1972,8 +2059,10 @@ JVOID OnIncomingDtmf(pjsua_call_id call_id, JINT32 iDtmf)
 
     try
     {
+        //create memory pool
         pool = pjsua_pool_create("jphone_dtmf", 1000, 1000);
 
+        //get call info
         status = pjsua_call_get_info(call_id, &ci);
     	if (status != PJ_SUCCESS)
         {
@@ -2073,7 +2162,7 @@ JPjSipUa::JPjSipUa()
     m_ePersistenceType = JSER_PERSISTENCE_NONE;
     m_pSerialization = JNULL;
 
-    //create JAgentThread and add into JThreadManager
+    //create JAgentThread and register it into the JThreadManager
     strThrdName = JS_T_JSIPUA;
     strLocalAddr = JSIPUA_LOCAL_ADDR;
 	m_pAgentThread = new JAgentThread(&strThrdName, &strLocalAddr, JSIPUA_LOCAL_PORT);
@@ -2090,6 +2179,7 @@ JPjSipUa::~JPjSipUa()
 {
     m_pPjSip->SipUaDestory();
 
+    //stop the timer
     if (m_timeHandler)
     {
         JSingleton<JTimer>::instance()->StopTimer(m_timeHandler);
@@ -2153,11 +2243,14 @@ JUINT32 JPjSipUa::InitFunc()
 
     if (m_pSerialization)
     {
+        //get the contact number list
         GetContactList(m_contactList);
         m_contactListNumber = m_contactList.GetItemNum();
 
+        //get the sipua config
         GetCfgList(&m_cfg);
 
+        //clear the unnormal status
         if (m_cfg.GetNumber().GetLength() &&
             m_cfg.GetProxyAddr().GetLength())
         {
@@ -2173,6 +2266,7 @@ JUINT32 JPjSipUa::InitFunc()
 
             StateChange(JSIPUA_STATUS_REGISTERING);
 
+            //start a register
             m_pPjSip->Register(m_cfg.GetNumber(), m_cfg.GetAuthName(), 
                 m_cfg.GetAuthPasswd(), m_cfg.GetProxyAddr());
 
@@ -2180,6 +2274,7 @@ JUINT32 JPjSipUa::InitFunc()
         }
     }
 
+    //start a timer to flush the contact number
     m_timeHandler = JSingleton<JTimer>::instance()->CreateTimer(JTIMER_TYPE_PERIODIC, 
                                                     OnFlushContactList, 
                                                     this, 
@@ -2189,6 +2284,7 @@ JUINT32 JPjSipUa::InitFunc()
         JSingleton<JTimer>::instance()->StartTimer(m_timeHandler);
     }
 
+    //set codec enable or disable
     m_pPjSip->SetCodecPriority();
 
     return JSUCCESS;
@@ -2329,6 +2425,7 @@ JEventBody* JPjSipUa::MakeEventBody(JUINT32 uiType)
 	return pEventBody;
 }
 
+//map key from enum to char
 JCHAR JPjSipUa::KeyEnum2Char(JSIPUA_KEY eKey)
 {
     JUINT32 uiSize = sizeof(gKeyMap)/sizeof(JSIPUA_KEY_MAP);
@@ -2355,6 +2452,7 @@ JCHAR JPjSipUa::KeyEnum2Char(JSIPUA_KEY eKey)
 	return JNULL;
 }
 
+//map key from char to enum
 JSIPUA_KEY JPjSipUa::KeyChar2Enum(JCHAR* pKey)
 {
     JUINT32 uiSize = sizeof(gKeyMap)/sizeof(JSIPUA_KEY_MAP);
@@ -2415,6 +2513,7 @@ JUINT32 JPjSipUa::StoreContactNumber()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_SIPUA, "JPjSipUa::StoreContactNumber");
 
+    //check whether current number already exist in the contact list
     JListIterator<JCHAR> clsListIter(m_contactList);
     for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
     {
@@ -2431,6 +2530,7 @@ JUINT32 JPjSipUa::StoreContactNumber()
         }
     }
 
+    //if exist, delete it and insert again
     if (bExist)
     {
         m_contactList.RemoveItem(pItem);
@@ -2438,6 +2538,7 @@ JUINT32 JPjSipUa::StoreContactNumber()
     }
     else
     {
+        //if contact number is too much, remove one
         if (m_contactListNumber >= JPJSIP_MAX_NUMBER)
         {
             m_contactList.RemoveTailItem();
@@ -2445,12 +2546,15 @@ JUINT32 JPjSipUa::StoreContactNumber()
             m_contactListNumber--;
         }
 
+        //alloc memory for static memory
         uiLen = m_strCurrNumber.GetLength();
         pData = JSingleton<JStaticMemory>::instance()->Alloc(uiLen+1);
         if (pData)
         {
             SafeMemset(pData, 0, uiLen+1);
             SafeStrcpy(pData, m_strCurrNumber.c_str(), uiLen+1);
+
+            //construct listitem and insert it into the contact list
             pItem = new JListItem<JCHAR>(pData);
             if (pItem)
             {
@@ -2577,6 +2681,7 @@ JUINT32 JPjSipUa::ProcSetCfgEvent(JPjSipUaCfg* pPjSipUaCfg)
         return JFAILURE;
     }
 
+    //save the sipua config
     if (pPjSipUaCfg->GetNumber() != m_cfg.GetNumber())
     {
         m_cfg.GetNumber() = pPjSipUaCfg->GetNumber();
@@ -2603,6 +2708,7 @@ JUINT32 JPjSipUa::ProcSetCfgEvent(JPjSipUaCfg* pPjSipUaCfg)
 
     if (bChanged)
     {
+        //clear the unnormal status
         if (m_status>=JSIPUA_STATUS_OUTGOING)
         {
             m_pPjSip->HangUp();
@@ -2615,11 +2721,13 @@ JUINT32 JPjSipUa::ProcSetCfgEvent(JPjSipUaCfg* pPjSipUaCfg)
 
         StateChange(JSIPUA_STATUS_REGISTERING);
 
+        //start a register
         m_pPjSip->Register(m_cfg.GetNumber(), m_cfg.GetAuthName(), 
             m_cfg.GetAuthPasswd(), m_cfg.GetProxyAddr());
 
         StateChange(JSIPUA_STATUS_REGISTERING);
 
+        //save the sipua config into the local persistence
         SetCfgList(&m_cfg);
     }
 
@@ -2658,6 +2766,7 @@ JUINT32 JPjSipUa::ProcGetCfgEvent(JEvent* pEvent)
         pModuleThread = dynamic_cast<JModuleThread*>(pThread);
         if (pModuleThread)
         {
+            //get the communication engine to send event
     	    pComEngine = pModuleThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -2721,6 +2830,7 @@ JUINT32 JPjSipUa::ProcPressKeyEvent(JPjSipUaKey* pPjSipUaKey)
 
                 StateChange(JSIPUA_STATUS_COLLECT);
             }
+            //dial dtmf while call is connnected
             else if(m_status == JSIPUA_STATUS_CONNECTED)
             {
                 cKey = KeyEnum2Char(eKey);
@@ -2759,6 +2869,7 @@ JUINT32 JPjSipUa::ProcPressKeyEvent(JPjSipUaKey* pPjSipUaKey)
                 uiLen = m_strCurrNumber.GetLength();
                 if (uiLen != 0)
                 {
+                    //start a call
                     uiRet = m_pPjSip->StartCall(m_strCurrNumber, m_cfg.GetProxyAddr());
                     if (uiRet != JSUCCESS)
                     {
@@ -2766,11 +2877,13 @@ JUINT32 JPjSipUa::ProcPressKeyEvent(JPjSipUaKey* pPjSipUaKey)
                             << "JPjSipUa::ProcPressKeyEvent StartCall return failure\n";
                     }
 
+                    //store the call number
                     StoreContactNumber();
                 }
             }
             else if (m_status == JSIPUA_STATUS_INCOMING)
             {
+                //answer the incoming call
                 uiRet = m_pPjSip->Answer(200);
         		if (uiRet != JSUCCESS)
                 {
@@ -2783,6 +2896,7 @@ JUINT32 JPjSipUa::ProcPressKeyEvent(JPjSipUaKey* pPjSipUaKey)
             }
             else if (m_status == JSIPUA_STATUS_CONNECTED)
             {
+                //hold the call
                 uiRet = m_pPjSip->Hold();
         		if (uiRet != JSUCCESS)
                 {
@@ -2797,6 +2911,7 @@ JUINT32 JPjSipUa::ProcPressKeyEvent(JPjSipUaKey* pPjSipUaKey)
             }
             else if (m_status == JSIPUA_STATUS_HOLDING)
             {
+                //unhold the call
                 uiRet = m_pPjSip->UnHold();
         		if (uiRet != JSUCCESS)
                 {
@@ -2823,6 +2938,7 @@ JUINT32 JPjSipUa::ProcPressKeyEvent(JPjSipUaKey* pPjSipUaKey)
                     m_status == JSIPUA_STATUS_CONNECTED || 
                     m_status == JSIPUA_STATUS_HOLDING)
             {
+                //hangup the call
                 m_pPjSip->HangUp();
             }
         }
@@ -2847,6 +2963,7 @@ JUINT32 JPjSipUa::ProcClickContactEvent(JPjSipUaClickContact* pPjSipUaClickConta
     {
         m_strCurrNumber = pPjSipUaClickContact->GetContactNumber();
 
+        //start a call with the contact number that already is selected
         uiRet = m_pPjSip->StartCall(m_strCurrNumber, m_cfg.GetProxyAddr());
         if (uiRet)
         {
@@ -2875,6 +2992,7 @@ JUINT32 JPjSipUa::ProcGetCallStatusEvent(JEvent* pEvent)
     pPjSipUaCallStatus = new JPjSipUaCallStatus;
     if (pNewEvent && pPjSipUaCallStatus)
     {
+        //set some params into the callstatus body
     	pPjSipUaCallStatus->SetNumber(m_strCurrNumber);
     	JString strStatus = StatusEnum2Char(m_status);
     	pPjSipUaCallStatus->SetStatus(strStatus);
@@ -2891,6 +3009,7 @@ JUINT32 JPjSipUa::ProcGetCallStatusEvent(JEvent* pEvent)
         pModuleThread = dynamic_cast<JModuleThread*>(pThread);
         if (pModuleThread)
         {
+            //get the communication engine to send event
     	    pComEngine = pModuleThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -2921,6 +3040,7 @@ JUINT32 JPjSipUa::ProcGetContactListEvent(JEvent* pEvent)
     pJPjSipUaContactList = new JPjSipUaContactList;
     if (pNewEvent && pJPjSipUaContactList)
     {
+        //iterator the contact list and set them into the contact list body
         JListIterator<JCHAR> clsListIter(m_contactList);
         for (clsListIter.First(); 
             clsListIter.Done() && uiContactListNumber && uiIdx<JPJSIP_MAX_NUMBER; 
@@ -2951,6 +3071,7 @@ JUINT32 JPjSipUa::ProcGetContactListEvent(JEvent* pEvent)
         pModuleThread = dynamic_cast<JModuleThread*>(pThread);
         if (pModuleThread)
         {
+            //get the communication engine to send event
     	    pComEngine = pModuleThread->GetNotifyCommEngine();
     	    if (pComEngine)
     	    {
@@ -2962,6 +3083,7 @@ JUINT32 JPjSipUa::ProcGetContactListEvent(JEvent* pEvent)
 	return JSUCCESS;
 }
 
+//map the status from enum to char
 JCHAR* JPjSipUa::StatusEnum2Char(JSIPUA_STATUS eStatus)
 {
     JUINT32 uiSize = sizeof(gStatusMap)/sizeof(JSIPUA_STATUS_MAP);
@@ -3004,6 +3126,7 @@ JUINT32 JPjSipUa::SetContactList(JList<JCHAR>& rSrcList)
 
     if (m_pSerialization)
     {
+        //iterator the contact number list
         JListIterator<JCHAR> clsListIter(rSrcList);
         for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
         {
@@ -3012,6 +3135,7 @@ JUINT32 JPjSipUa::SetContactList(JList<JCHAR>& rSrcList)
             uiNum++;
             pDstData = JNULL;
 
+            //get the data
             pSrcData = pSrcItem->GetData();
             uiLen = SafeStrlen(pSrcData);
             if (uiLen)
@@ -3031,6 +3155,7 @@ JUINT32 JPjSipUa::SetContactList(JList<JCHAR>& rSrcList)
                 }
             }
 
+            //construct the listitem and insert it into the contact list
             pDstItem = new JListItem<JPER_RECORD>(pDstData);
             pDstItem->SetDataLength(sizeof(JPER_RECORD));
             clsDstList.InsertItem(pDstItem, prevDstItem);
@@ -3038,6 +3163,7 @@ JUINT32 JPjSipUa::SetContactList(JList<JCHAR>& rSrcList)
             prevDstItem = pDstItem;
         }
 
+        //save the contact list into the local persistence
         m_pSerialization->SetList(clsDstList, JSIPUA_CONTACT_FILE);
     }
 
@@ -3063,8 +3189,10 @@ JUINT32 JPjSipUa::GetContactList(JList<JCHAR>& rDstList)
 
     if (m_pSerialization)
     {
+        //get the contact list from local persistence
         clsSrcList = m_pSerialization->GetList(JSIPUA_CONTACT_FILE);
 
+        //iterate the contact list
         JListIterator<JPER_RECORD> clsListIter(clsSrcList);
         for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
         {
@@ -3072,6 +3200,7 @@ JUINT32 JPjSipUa::GetContactList(JList<JCHAR>& rDstList)
 
             pDstData = JNULL;
 
+            //get the data
             pSrcData = pSrcItem->GetData();
             uiLen = SafeStrlen(pSrcData->strValue);
             if (uiLen)
@@ -3090,6 +3219,7 @@ JUINT32 JPjSipUa::GetContactList(JList<JCHAR>& rDstList)
                 }
             }
 
+            //construct the listitem and insert it into the contact list
             pDstItem = new JListItem<JCHAR>(pDstData);
             rDstList.InsertItem(pDstItem, prevDstItem);
 
@@ -3113,6 +3243,7 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
 
     if (m_pSerialization)
     {
+        //get the number and set it into the dst data
         uiLen = pPjSipUaCfg->GetNumber().GetLength();
         if (uiLen)
         {
@@ -3123,6 +3254,8 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
 	            SafeMemset(reinterpret_cast<JCHAR*>(pDstData), 0, sizeof(JPER_RECORD)+1);
                 SafeSprintf(pDstData->strKey, JMAX_STRING_LEN, "%s", JSIPUA_NUMBER);
                 SafeStrcpy(pDstData->strValue, pPjSipUaCfg->GetNumber().c_str(), uiLen+1);
+
+                //construct the listitem and insert it into the record list
                 pDstItem = new JListItem<JPER_RECORD>(pDstData);
                 pDstItem->SetDataLength(sizeof(JPER_RECORD));
                 clsDstList.InsertItem(pDstItem, prevDstItem);
@@ -3135,6 +3268,7 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
             }
         }
 
+        //get the auth number and set it into the dst data
         uiLen = pPjSipUaCfg->GetAuthName().GetLength();
         if (uiLen)
         {
@@ -3145,6 +3279,8 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
 	            SafeMemset(reinterpret_cast<JCHAR*>(pDstData), 0, sizeof(JPER_RECORD)+1);
                 SafeSprintf(pDstData->strKey, JMAX_STRING_LEN, "%s", JSIPUA_AUTH_NAME);
                 SafeStrcpy(pDstData->strValue, pPjSipUaCfg->GetAuthName().c_str(), uiLen+1);
+
+                //construct the listitem and insert it into the record list
                 pDstItem = new JListItem<JPER_RECORD>(pDstData);
                 pDstItem->SetDataLength(sizeof(JPER_RECORD));
                 clsDstList.InsertItem(pDstItem, prevDstItem);
@@ -3157,6 +3293,7 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
             }
         }
 
+        //get the password and set it into the dst data
         uiLen = pPjSipUaCfg->GetAuthPasswd().GetLength();
         if (uiLen)
         {
@@ -3167,6 +3304,8 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
 	            SafeMemset(reinterpret_cast<JCHAR*>(pDstData), 0, sizeof(JPER_RECORD)+1);
                 SafeSprintf(pDstData->strKey, JMAX_STRING_LEN, "%s", JSIPUA_AUTH_PASSWORD);
                 SafeStrcpy(pDstData->strValue, pPjSipUaCfg->GetAuthPasswd().c_str(), uiLen+1);
+
+                //construct the listitem and insert it into the record list
                 pDstItem = new JListItem<JPER_RECORD>(pDstData);
                 pDstItem->SetDataLength(sizeof(JPER_RECORD));
                 clsDstList.InsertItem(pDstItem, prevDstItem);
@@ -3179,6 +3318,7 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
             }
         }
 
+        //get the proxy address and set it into the dst data
         uiLen = pPjSipUaCfg->GetProxyAddr().GetLength();
         if (uiLen)
         {
@@ -3189,6 +3329,8 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
 	            SafeMemset(reinterpret_cast<JCHAR*>(pDstData), 0, sizeof(JPER_RECORD)+1);
                 SafeSprintf(pDstData->strKey, JMAX_STRING_LEN, "%s", JSIPUA_PROXY_ADDR);
                 SafeStrcpy(pDstData->strValue, pPjSipUaCfg->GetProxyAddr().c_str(), uiLen+1);
+
+                //construct the listitem and insert it into the record list
                 pDstItem = new JListItem<JPER_RECORD>(pDstData);
                 pDstItem->SetDataLength(sizeof(JPER_RECORD));
                 clsDstList.InsertItem(pDstItem, prevDstItem);
@@ -3201,6 +3343,7 @@ JUINT32 JPjSipUa::SetCfgList(JPjSipUaCfg* pPjSipUaCfg)
             }
         }
 
+        //store the record list into the local persistence
         m_pSerialization->SetList(clsDstList, JSIPUA_CFG_FILE);
     }
 
@@ -3220,8 +3363,10 @@ JUINT32 JPjSipUa::GetCfgList(JPjSipUaCfg* pPjSipUaCfg)
 
     if (m_pSerialization)
     {
+        //get the record list from the local persistence
         clsSrcList = m_pSerialization->GetList(JSIPUA_CFG_FILE);
 
+        //iterate the list, get the value and set them into the sipua config
         JListIterator<JPER_RECORD> clsListIter(clsSrcList);
         for (clsListIter.First(); clsListIter.Done(); clsListIter.Next())
         {

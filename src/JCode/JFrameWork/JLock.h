@@ -12,7 +12,7 @@
 
 namespace JFrameWork{
 
-//JLock definication
+//JLock definition
 class JLock: public JObject{
 public:
     JLock();

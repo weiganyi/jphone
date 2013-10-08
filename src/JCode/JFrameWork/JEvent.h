@@ -12,7 +12,7 @@
 
 namespace JFrameWork{
 
-//JEvent definication
+//JEvent definition
 //these events are used to communicate between module or thread
 typedef enum{
 	JEVT_NONE,

@@ -54,6 +54,7 @@ JModuleThread::JModuleThread(JString* pThdName,
         m_modData[uiIdx].uiRunTime = 0;
     }
 
+    //construct a commengine for communication between the modules
     if (pLocalAddr && uiLocalPort)
     {
         m_pNotifyCommEngine = new JCommEngine(JSOCKET_UDP);
@@ -87,7 +88,7 @@ JUINT32 JModuleThread::Init()
         JLOG_MOD_THREAD, "JModuleThread::Init");
 
     #if 1
-    //only for RTTI usage exercise, otherwise I need use virtual function calling here.
+    //only for RTTI usage test, otherwise I need use virtual function calling here.
     for (uiIdx=0; uiIdx<m_modDataUsed; uiIdx++)
     {
         if (typeid(*(m_modData[uiIdx].pModule)) == typeid(JStaticMemory))
@@ -141,6 +142,7 @@ JUINT32 JModuleThread::Init()
     }
     #endif
 
+    //add notify commengine into the group
     if (m_pNotifyCommEngine)
     {
         m_commEngineGroup.AddCommEngine(m_pNotifyCommEngine);
@@ -171,20 +173,24 @@ JUINT32 JModuleThread::Run()
     }
 
     do{
+        //check message
         pCommEngine = m_commEngineGroup.HasMessage(JCOMM_SELECT_INDEFINITE);
         if (pCommEngine && pCommEngine == m_pNotifyCommEngine)  //for thread notify CommEngine
         {
             uiRet = pCommEngine->RecvMessage(pBuf, JCOMM_MSG_BUF_LEN, &stAddr);
+            //whether is event notify message
             if (uiRet == 1 && SafeStrcmp(pBuf, "1") ==0)
             {
                 while(1)
                 {
+                    //get module that can run this time
                     uiIdx = GetRunModuleSeq();
 
                     if (uiIdx<m_modDataUsed)
                     {
                         m_Lock.Acquire();
 
+                        //dequeue the event and process it
                         pListItem = m_modData[uiIdx].hQueue.DeQueue();
                         if (pListItem)
                         {
@@ -204,15 +210,10 @@ JUINT32 JModuleThread::Run()
                         break;
                     }
 
+                    //increase runing count for this module
                     IncModuleSeq(uiIdx);
                 }
             }
-            else    //JEvent recv, and route also must be added here.
-            {
-            }
-        }
-        else    //other thread JCommEngine
-        {
         }
     }while(1);
 
@@ -290,6 +291,7 @@ JEventBody* JModuleThread::MakeEventBody(JEVT_TYPE eType, JCHAR* pModName)
 	return pEventBody;
 }
 
+//get module from name
 JModule* JModuleThread::GetModule(JCHAR* pModName)
 {
     JUINT32 uiIdx;
@@ -325,6 +327,8 @@ JUINT32 JModuleThread::GetRunModuleSeq()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_THREAD, "JModuleThread::GetRunModuleSeq");
 
+    //check all modules that have some events, then calculate the smallest 
+    //runing time for all modules, use it as highest priority module to run
     for (uiIdx=0; uiIdx<m_modDataUsed; uiIdx++)
     {
         if (!m_modData[uiIdx].hQueue.IsEmpty())
@@ -353,6 +357,8 @@ JUINT32 JModuleThread::IncModuleSeq(const JUINT32 uiModSeq)
 
     if (uiModSeq < m_modDataUsed)
     {
+        //increase the running time from the module level, 
+        //and process loop case carefully
         uiIncValue = m_modData[uiModSeq].eLevel;
         if ((uiMaxValue-m_modData[uiModSeq].uiRunTime) < uiIncValue)
         {
@@ -412,6 +418,7 @@ JAgentThread::JAgentThread(JString* pThdName,
 
     if (pLocalAddr && uiLocalPort)
     {
+        //construct a notify comm engine to send and recv message
         m_pNotifyCommEngine = new JCommEngine(JSOCKET_UDP);
         if (m_pNotifyCommEngine)
         {
@@ -585,6 +592,7 @@ JUINT32 JThreadManager::Run()
     JLogAutoPtr clsLogAutoPtr(JSingleton<JLog>::instance(), 
         JLOG_MOD_THREAD, "JThreadManager::Run");
 
+    //start thread to run all thread
     for (uiIdx=0; uiIdx<m_thrdDataUsed; uiIdx++)
     {
         if (m_thrdData[uiIdx].pThread && 
@@ -627,6 +635,7 @@ JEventBody* JThreadManager::MakeEventBody(JCHAR* pThrdName, JCHAR* pModName, JEV
 	return pEventBody;
 }
 
+//get thread handler from name
 JThread* JThreadManager::GetThread(JCHAR* pThrdName)
 {
     JUINT32 uiIdx;
@@ -660,6 +669,7 @@ DWORD JThreadProc(JThread* pThread)
     return JSUCCESS;
 }
 
+//get module from thread and module name
 JModule* GetRegisterModule(JCHAR* pThrdName, JCHAR* pModName)
 {
     JThread* pThread = JNULL;
