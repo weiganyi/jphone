@@ -31,5 +31,5 @@ There are two .exe file can be run directly in the bin directory.<br/>
 
 Design
 =====
-Please refer to my blog(Chinese):
+Please refer to my blog(Chinese):<br/>
 http://blog.csdn.net/weiganyi/article/details/12512693
